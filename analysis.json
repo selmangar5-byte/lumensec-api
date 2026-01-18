@@ -1,0 +1,68 @@
+{
+  "schema_version": "analysis_result.v1",
+  "correlation_id": "2e7c2c3c-2a2f-4a87-9f20-1f6458a54a21",
+  "tenant_id": "22a7696d-e26d-453d-8773-77025846cbf4",
+  "source": "okta",
+  "event_key": {
+    "event_id": "evt_okta_0001",
+    "fingerprint": null
+  },
+  "triage": {
+    "severity": "medium",
+    "confidence": 0.9,
+    "category": "auth",
+    "tags": ["okta", "auth_failure", "threat_suspected", "proxy"]
+  },
+  "narrative": {
+    "summary": "Okta blocked a failed SSO authentication attempt for user jane.doe@acme.com which was explicitly flagged as a suspected threat.",
+    "why_it_matters": "While the authentication failed, the 'threatSuspected' flag indicates Okta detected anomalous behavior (e.g., high velocity or bad reputation) originating from IP 203.0.113.44.",
+    "recommended_actions": [
+      {
+        "title": "Review User Activity",
+        "rationale": "Check for any successful logins for this user immediately before or after this event.",
+        "priority": "P1"
+      },
+      {
+        "title": "Investigate Source IP",
+        "rationale": "Analyze IP 203.0.113.44 for historical malicious activity.",
+        "priority": "P2"
+      }
+    ]
+  },
+  "evidence": {
+    "signals": [
+      {
+        "label": "Threat Suspected",
+        "value": "true",
+        "extracted_from": "payload.debugContext.debugData.threatSuspected"
+      },
+      {
+        "label": "Authentication Result",
+        "value": "FAILURE",
+        "extracted_from": "payload.outcome.result"
+      },
+      {
+        "label": "Actor",
+        "value": "jane.doe@acme.com",
+        "extracted_from": "payload.actor.displayName"
+      },
+      {
+        "label": "Source IP",
+        "value": "203.0.113.44",
+        "extracted_from": "payload.client.ip"
+      },
+      {
+        "label": "Is Proxy",
+        "value": true,
+        "extracted_from": "payload.securityContext.isProxy"
+      }
+    ],
+    "references": [
+      {
+        "type": "webhook_event",
+        "id": "2e7c2c3c-2a2f-4a87-9f20-1f6458a54a21"
+      }
+    ]
+  }
+}
+

@@ -1,0 +1,51 @@
+/ingest/webhook:
+    post:
+      summary: Ingest a webhook event
+      description: |
+        Ingests a webhook event for a specific tenant.
+        Idempotency: If a duplicate exists for the SAME tenant+source+(event_id or fingerprint), returns 202 and does NOT create a new row.
+      parameters:
+        - in: header
+          name: X-Lumensec-Tenant-Id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: The UUID of the tenant.
+        - in: header
+          name: X-Lumensec-Timestamp
+          schema:
+            type: integer
+          required: true
+          description: Unix timestamp of the request.
+        - in: header
+          name: X-Lumensec-Signature
+          schema:
+            type: string
+          required: true
+          description: HMAC-SHA256 signature of timestamp + "." + body using tenant webhook secret.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source:
+                  type: string
+                event_id:
+                  type: string
+                fingerprint:
+                  type: string
+                payload:
+                  type: object
+              oneOf:
+                - required: [source, payload, event_id]
+                - required: [source, payload, fingerprint]
+      responses:
+        '202':
+          description: Event accepted or deduplicated.
+        '400':
+          description: Missing required fields or malformed JSON.
+        '401':
+          description: Invalid signature, timestamp outside window, or invalid tenant.
