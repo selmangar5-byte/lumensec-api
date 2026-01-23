@@ -10,24 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_16_182206) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_23_011541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "analysis_results", force: :cascade do |t|
+  create_table "analysis_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "tenant_id", null: false
     t.uuid "webhook_event_id", null: false
     t.uuid "correlation_id"
     t.string "source"
-    t.jsonb "event_key"
-    t.jsonb "triage"
-    t.jsonb "narrative"
-    t.jsonb "evidence"
+    t.jsonb "event_key", default: {}
+    t.jsonb "triage", default: {}
+    t.jsonb "narrative", default: {}
+    t.jsonb "evidence", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_analysis_results_on_tenant_id"
     t.index ["webhook_event_id"], name: "index_analysis_results_on_webhook_event_id"
+  end
+
+  create_table "evidence_packs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "analysis_result_id", null: false
+    t.jsonb "data", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["analysis_result_id"], name: "index_evidence_packs_on_analysis_result_id"
   end
 
   create_table "tenants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -51,5 +59,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_16_182206) do
 
   add_foreign_key "analysis_results", "tenants"
   add_foreign_key "analysis_results", "webhook_events"
+  add_foreign_key "evidence_packs", "analysis_results"
   add_foreign_key "webhook_events", "tenants"
 end

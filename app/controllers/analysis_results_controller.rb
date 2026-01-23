@@ -7,14 +7,21 @@ class AnalysisResultsController < ApplicationController
       webhook_event_id: params[:correlation_id],
       correlation_id: params[:correlation_id],
       source: params[:source],
-      event_key: params[:event_key].to_json,
-      triage: params[:triage].to_json,
-      narrative: params[:narrative].to_json,
-      evidence: params[:evidence].to_json
+      event_key: params[:event_key],
+      triage: params[:triage],
+      narrative: params[:narrative],
+      evidence: params[:evidence]
     )
 
-    head :no_content
+    render json: { id: analysis_result.id }, status: :created
   rescue => e
     render json: { error: e.message }, status: :unprocessable_entity
+  end
+  
+  def show
+    analysis_result = AnalysisResult.find(params[:id])
+    render json: analysis_result, include: [:webhook_event, :evidence_packs]
+  rescue => e
+    render json: { error: e.message }, status: :not_found
   end
 end

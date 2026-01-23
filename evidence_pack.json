@@ -1,0 +1,10 @@
+{
+  "analysis_result_id": "1",
+  "data": {
+    "pack_label": "suspicious_login_signals",
+    "items": [
+      { "type": "signal", "label": "Threat Suspected", "value": "true" },
+      { "type": "signal", "label": "Actor", "value": "jane.doe@acme.com" }
+    ]
+  }
+}
