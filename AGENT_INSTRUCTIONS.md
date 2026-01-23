@@ -185,6 +185,8 @@ class UpdateTenantsAndAnalysisResults < ActiveRecord::Migration[7.2]
     add_column :evidence_packs, :generated_at, :datetime
     
     add_index :evidence_packs, :tenant_id
+analysis_result.rb
+Role model
   end
 end
 ```

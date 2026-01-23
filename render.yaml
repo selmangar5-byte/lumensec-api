@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: lumensec-api
+    env: ruby
+    buildCommand: bundle install
+    startCommand: bundle exec puma -C config/puma.rb
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_MASTER_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lumensec-db
+          property: connectionString
+
+databases:
+  - name: lumensec-db
+    databaseName: lumensec_production
+    user: lumensec

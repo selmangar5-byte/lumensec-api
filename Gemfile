@@ -44,3 +44,8 @@ end
 
 # Use PostgreSQL for Active Record (Lumensec)
 gem "pg", "~> 1.5"
+
+gem 'bcrypt', '~> 3.1.7'
+gem 'jwt', '~> 2.7'
+gem 'prawn', '~> 2.4'
+gem 'prawn-table', '~> 0.2'

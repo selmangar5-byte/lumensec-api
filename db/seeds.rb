@@ -107,3 +107,45 @@ puts "\n💡 Pour tester dans la console Rails, tape :"
 puts "   rails console"
 puts "   Puis essaie : Tenant.first"
 puts "="*60
+
+# ============================================================
+# PHASE 2 : ROLES ET USERS
+# ============================================================
+
+puts "\n🔐 Création des rôles par défaut..."
+
+# Créer les rôles
+admin_role = Role.find_or_create_by!(name: 'admin') do |role|
+  role.permissions = Role::ADMIN_PERMISSIONS
+end
+
+analyst_role = Role.find_or_create_by!(name: 'analyst') do |role|
+  role.permissions = Role::ANALYST_PERMISSIONS
+end
+
+viewer_role = Role.find_or_create_by!(name: 'viewer') do |role|
+  role.permissions = Role::VIEWER_PERMISSIONS
+end
+
+puts "✅ Rôles créés : admin, analyst, viewer"
+
+# Créer un utilisateur admin
+puts "\n👤 Création d'un utilisateur admin..."
+
+admin_user = User.find_or_create_by!(email: 'admin@lumensec.local') do |user|
+  user.tenant = tenant
+  user.name = 'Admin Demo'
+  user.password = 'password123'
+  user.password_confirmation = 'password123'
+end
+
+# Associer le rôle admin
+admin_user.user_roles.find_or_create_by!(role: admin_role)
+
+puts "✅ Utilisateur admin créé !"
+puts "   📧 Email: admin@lumensec.local"
+puts "   🔑 Password: password123"
+
+puts "\n============================================================"
+puts "🎉 SEEDS COMPLÉTÉS AVEC SUCCÈS !"
+puts "============================================================"
