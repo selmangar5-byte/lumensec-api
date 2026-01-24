@@ -1,27 +1,31 @@
+# frozen_string_literal: true
+# Copyright © 2025 Lumensec Inc. All rights reserved.
+
 class AnalysisResultsController < ApplicationController
-  protect_from_forgery with: :null_session
-
-  def create
-    analysis_result = AnalysisResult.create!(
-      tenant_id: params[:tenant_id],
-      webhook_event_id: params[:correlation_id],
-      correlation_id: params[:correlation_id],
-      source: params[:source],
-      event_key: params[:event_key],
-      triage: params[:triage],
-      narrative: params[:narrative],
-      evidence: params[:evidence]
-    )
-
-    render json: { id: analysis_result.id }, status: :created
-  rescue => e
-    render json: { error: e.message }, status: :unprocessable_entity
-  end
+  skip_before_action :authenticate_user!, only: [:index, :show]
   
+  def index
+    @analysis_results = current_tenant&.analysis_results || AnalysisResult.all
+    render json: @analysis_results
+  end
+
   def show
-    analysis_result = AnalysisResult.find(params[:id])
-    render json: analysis_result, include: [:webhook_event, :evidence_packs]
-  rescue => e
-    render json: { error: e.message }, status: :not_found
+    @analysis_result = AnalysisResult.find(params[:id])
+    render json: @analysis_result
+  end
+
+  def update
+    @analysis_result = AnalysisResult.find(params[:id])
+    if @analysis_result.update(analysis_result_params)
+      render json: @analysis_result
+    else
+      render json: { errors: @analysis_result.errors }, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def analysis_result_params
+    params.require(:analysis_result).permit(:status, :severity)
   end
 end
