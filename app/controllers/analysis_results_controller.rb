@@ -2,8 +2,6 @@
 # Copyright © 2025 Lumensec Inc. All rights reserved.
 
 class AnalysisResultsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:index, :show]
-  
   def index
     @analysis_results = current_tenant&.analysis_results || AnalysisResult.all
     render json: @analysis_results

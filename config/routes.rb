@@ -1,26 +1,19 @@
-# frozen_string_literal: true
-# Copyright © 2025 Lumensec Inc. All rights reserved.
-
 Rails.application.routes.draw do
-  get '/health', to: proc { [200, {}, ['OK']] }
+  # Health check
+  get "up" => "rails/health#show", as: :rails_health_check
 
-  # Auth (public)
-  post '/auth/login', to: 'auth#login'
-  post '/auth/logout', to: 'auth#logout'
-
-  # Webhooks (public)
-  post '/ingest/webhook', to: 'webhooks#create'
-
-  # Analysis Results
+  # API endpoints
   resources :analysis_results, only: [:index, :show, :update]
   
-  # Evidence Packs
-  resources :evidence_packs, only: [:index, :show, :create, :destroy] do
+  resources :evidence_packs, only: [:index, :show] do
     member do
-      get :download_pdf
+      get :generate_pdf
     end
   end
 
-  # Dashboard KPIs
-  get '/dashboard', to: 'kpis#dashboard'
+  # Webhooks
+  post 'webhooks/crowdstrike', to: 'webhooks#crowdstrike'
+
+  # Dashboard
+  get 'dashboard/stats', to: 'dashboard#stats'
 end

@@ -1,116 +1,77 @@
 # frozen_string_literal: true
-
-require
-  skip_before_action :authenticate_user!
- "openssl"
+# Copyright © 2025 Lumensec Inc. All rights reserved.
 
 class WebhooksController < ApplicationController
-  skip_before_action :verify_authenticity_token, raise: false
-  before_action :verify_signature
+  skip_before_action :set_tenant, only: [:crowdstrike]
 
-  def create
-    # Required: source, payload, and at least one identifier (event_id or fingerprint)
-    if params[:source].blank? || params[:payload].blank? || (params[:event_id].blank? && params[:fingerprint].blank?)
-      return render json: { error: "Missing required fields" }, status: :bad_request
-    end
+  def crowdstrike
+    # Créer l'événement webhook
+    webhook_event = WebhookEvent.create!(
+      tenant_id: find_tenant_from_webhook,
+      source: 'crowdstrike',
+      event_id: params[:event_id],
+      payload: params.to_unsafe_h
+    )
 
-    begin
-      event = @tenant.webhook_events.create!(webhook_params)
+    # Créer l'analyse
+    analysis = AnalysisResult.create!(
+      tenant_id: webhook_event.tenant_id,
+      webhook_event: webhook_event,
+      correlation_id: webhook_event.id,
+      source: 'crowdstrike',
+      event_key: { event_id: params[:event_id] },
+      triage: extract_triage_data(params),
+      narrative: extract_narrative(params),
+      evidence: extract_evidence(params),
+      status: 'new',
+      severity: calculate_severity(params)
+    )
 
-      # Persist analysis result (triage output) if present in payload
-      AnalysisResult.create!(
-        tenant: @tenant,
-        webhook_event: event,
-        correlation_id: event.id,
-        source: event.source,
-        event_key: {
-          event_id: event.event_id,
-          fingerprint: event.fingerprint
-        },
-        triage: event.payload["triage"],
-        narrative: event.payload["narrative"],
-        evidence: event.payload["evidence"]
-      )
-
-      envelope = {
-        schema_version: "event_envelope.v1",
-        correlation_id: event.id,
-        tenant_id: @tenant.id,
-        source: event.source,
-        event_key: {
-          event_id: event.event_id,
-          fingerprint: event.fingerprint
-        },
-        received_at: event.created_at.utc.iso8601,
-        signature_validated: true,
-        payload: event.payload,
-        context: {
-          request_ip: request.remote_ip,
-          user_agent: request.user_agent,
-          headers_whitelist: {
-            content_type: request.content_type
-          }
-        }
-      }
-
-      Rails.logger.info("LUMENSEC_EVENT_ENVELOPE=#{envelope.to_json}")
-
-    rescue ActiveRecord::RecordNotUnique
-      # Idempotency: Duplicate found, treat as accepted
-    end
-
-    head :accepted
+    render json: { 
+      status: 'received', 
+      webhook_event_id: webhook_event.id,
+      analysis_id: analysis.id 
+    }, status: :created
+  rescue => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   private
 
-  def webhook_params
-    params.permit(:source, :event_id, :fingerprint, payload: {})
+  def find_tenant_from_webhook
+    Tenant.first&.id
   end
 
-  def verify_signature
-    tenant_id  = request.headers["X-Lumensec-Tenant-Id"]
-    timestamp  = request.headers["X-Lumensec-Timestamp"]
-    signature  = request.headers["X-Lumensec-Signature"]
+  def extract_triage_data(params)
+    {
+      verdict: params.dig(:metadata, :verdict) || 'unknown',
+      priority: params.dig(:metadata, :priority) || 'medium',
+      confidence: params.dig(:metadata, :confidence) || 0.5
+    }
+  end
 
-    if tenant_id.blank? || timestamp.blank? || signature.blank?
-      render json: { error: "Missing authentication headers" }, status: :unauthorized
-      return
-    end
+  def extract_narrative(params)
+    {
+      summary: params.dig(:metadata, :description) || 'Security event detected',
+      details: params.dig(:metadata, :details) || 'Event requires investigation'
+    }
+  end
 
-    unless timestamp.to_s.match?(/\A\d+\z/)
-      render json: { error: "Invalid timestamp" }, status: :unauthorized
-      return
-    end
+  def extract_evidence(params)
+    {
+      files: params.dig(:metadata, :files) || [],
+      hashes: params.dig(:metadata, :hashes) || [],
+      processes: params.dig(:metadata, :processes) || []
+    }
+  end
 
-    # Replay protection: 5 minutes in the past, 1 minute in the future
-    ts = timestamp.to_i
-    if ts < 5.minutes.ago.to_i || ts > 1.minute.from_now.to_i
-      render json: { error: "Invalid timestamp" }, status: :unauthorized
-      return
-    end
-
-    @tenant = Tenant.find_by(id: tenant_id)
-    unless @tenant
-      render json: { error: "Invalid tenant" }, status: :unauthorized
-      return
-    end
-
-    request.body.rewind
-    body_content = request.body.read
-    request.body.rewind
-
-    computed = OpenSSL::HMAC.hexdigest(
-      "SHA256",
-      @tenant.webhook_secret,
-      "#{timestamp}.#{body_content}"
-    )
-
-    # secure_compare requires same length
-    if computed.bytesize != signature.bytesize ||
-       !ActiveSupport::SecurityUtils.secure_compare(computed, signature)
-      render json: { error: "Invalid signature" }, status: :unauthorized
-      return
+  def calculate_severity(params)
+    case params.dig(:metadata, :severity)&.downcase
+    when 'critical' then 5
+    when 'high' then 4
+    when 'medium' then 3
+    when 'low' then 2
+    else 1
     end
   end
 end
