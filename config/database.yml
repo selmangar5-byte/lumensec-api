@@ -16,3 +16,7 @@ test:
 production:
   <<: *default
   database: lumensec_api_production
+
+production:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
