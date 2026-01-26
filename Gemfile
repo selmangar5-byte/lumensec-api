@@ -50,3 +50,5 @@ gem 'jwt', '~> 2.7'
 gem 'prawn', '~> 2.4'
 gem 'prawn-table', '~> 0.2'
 gem 'matrix'
+
+gem "rack-cors", "~> 3.0"
