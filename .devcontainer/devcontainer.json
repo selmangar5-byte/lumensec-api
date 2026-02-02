@@ -1,0 +1,4 @@
+{
+  "name": "Lumensec API",
+  "postStartCommand": "sudo service postgresql start"
+}
