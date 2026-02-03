@@ -1,22 +1,17 @@
-:default: &default
+default: &default
   adapter: postgresql
   encoding: unicode
-  username: vscode
-  password: 
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
 
 development:
   <<: *default
-  database: lumensec_api_development
+  database: lumensec_development
 
 test:
   <<: *default
-  database: lumensec_api_test
+  database: lumensec_test
 
 production:
   <<: *default
-  database: lumensec_api_production
-
-production:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
+  database: lumensec_production

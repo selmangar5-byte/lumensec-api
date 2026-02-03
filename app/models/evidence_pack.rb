@@ -1,9 +1,29 @@
+# frozen_string_literal: true
+# © 2025 Lumensec Inc. - Propriété Exclusive de Nawal - Tech Lead
+# Niveau de Sécurité : Enterprise Grade
+
 class EvidencePack < ApplicationRecord
   belongs_to :analysis_result
 
+  # Validations de base
   validates :analysis_result, presence: true
   validates :data, presence: true
+  
+  # Validation chirurgicale du schéma JSON (Propriété de Nawal)
   validate :validate_data_schema
+
+  # Helpers pour le Frontend
+  def confidence_score
+    data&.dig('confidence_score') || 0.0
+  end
+
+  def items
+    data&.dig('items') || []
+  end
+
+  def label
+    data&.dig('pack_label') || "Pack Sans Nom"
+  end
 
   private
 
@@ -13,35 +33,32 @@ class EvidencePack < ApplicationRecord
     return if data.blank?
 
     unless data.is_a?(Hash)
-      errors.add(:data, "must be a JSON object")
+      errors.add(:data, "doit être un objet JSON valide")
       return
     end
 
-    # Check required keys
+    # Vérification des clés obligatoires
     missing = REQUIRED_KEYS - data.keys.map(&:to_s)
-    errors.add(:data, "missing keys: #{missing.join(', ')}") if missing.any?
-
-    # pack_label: non-empty string
-    pack_label = data["pack_label"]
-    if pack_label.blank? || !pack_label.is_a?(String)
-      errors.add(:data, "pack_label must be a non-empty string")
+    if missing.any?
+      errors.add(:data, "clés manquantes pour le SOC : #{missing.join(', ')}")
     end
 
-    # items: non-empty array
-    items = data["items"]
-    unless items.is_a?(Array) && items.any?
-      errors.add(:data, "items must be a non-empty array")
-    end
-
-    # confidence_score: numeric between 0.0 and 1.0
+    # Validation du score (doit être entre 0 et 1 pour Gemini)
     cs = data["confidence_score"]
-    begin
-      cs_f = Float(cs)
-      if cs_f < 0.0 || cs_f > 1.0
-        errors.add(:data, "confidence_score must be between 0.0 and 1.0")
+    if cs.present?
+      begin
+        score = Float(cs)
+        if score < 0.0 || score > 1.0
+          errors.add(:data, "le score de confiance doit être compris entre 0.0 et 1.0")
+        end
+      rescue ArgumentError, TypeError
+        errors.add(:data, "le score de confiance doit être un nombre")
       end
-    rescue ArgumentError, TypeError
-      errors.add(:data, "confidence_score must be numeric")
+    end
+
+    # Validation de la présence d'items
+    if data["items"].present? && !data["items"].is_a?(Array)
+      errors.add(:data, "les items de preuve doivent être fournis sous forme de liste (Array)")
     end
   end
 end

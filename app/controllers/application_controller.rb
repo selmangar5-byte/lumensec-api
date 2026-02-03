@@ -1,18 +1,15 @@
 # frozen_string_literal: true
-# Copyright © 2025 Lumensec Inc. All rights reserved.
 
 class ApplicationController < ActionController::API
-  before_action :set_tenant
-  
   private
 
-  def set_tenant
-    # Pour l'instant, on utilise le premier tenant
-    # Plus tard : extraction du tenant_id depuis JWT ou headers
-    @current_tenant = Tenant.first
+  def current_tenant_id
+    tenant_id = request.headers['X-Tenant-ID'].presence
+    raise ActionController::BadRequest unless tenant_id
+    tenant_id
   end
 
-  def current_tenant
-    @current_tenant
+  def tenant_scope
+    AnalysisResult.where(tenant_id: current_tenant_id)
   end
 end

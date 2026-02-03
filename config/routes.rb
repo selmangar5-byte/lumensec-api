@@ -1,19 +1,16 @@
-Rails.application.routes.draw do
-  # Health check
-  get "up" => "rails/health#show", as: :rails_health_check
+# frozen_string_literal: true
 
-  # API endpoints
-  resources :analysis_results, only: [:index, :show, :update]
-  
-  resources :evidence_packs, only: [:index, :show] do
+Rails.application.routes.draw do
+  root to: proc { [200, { 'Content-Type' => 'application/json' }, [{ status: 'Lumensec SOC API Online', version: '2.8.0' }.to_json]] }
+
+  get 'dashboard/stats', to: 'dashboard#stats'
+
+  resources :analysis_results, only: [:index, :show, :update] do
     member do
-      get :generate_pdf
+      get :evidence_pack
+      get :export_pdf
     end
   end
 
-  # Webhooks
-  post 'webhooks/crowdstrike', to: 'webhooks#crowdstrike'
-
-  # Dashboard
-  get 'dashboard/stats', to: 'dashboard#stats'
+  post 'webhooks/receive', to: 'webhooks#receive'
 end

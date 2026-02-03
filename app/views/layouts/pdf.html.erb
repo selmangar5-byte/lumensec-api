@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { font-family: 'Inter', sans-serif; -webkit-print-color-adjust: exact; }
+      @media print {
+        .page-break { page-break-after: always; }
+      }
+    </style>
+  </head>
+  <body class="bg-white text-slate-900">
+    <%= yield %>
+  </body>
+</html>

@@ -1,16 +1,29 @@
 # frozen_string_literal: true
-# Copyright © 2025 Lumensec Inc. All rights reserved.
+# © 2025 Lumensec Inc. - Propriété Exclusive de Nawal - Tech Lead
 
 class AnalysisResult < ApplicationRecord
-  belongs_to :tenant
-  belongs_to :webhook_event
-  has_many :evidence_packs, dependent: :destroy
+  # Relations
+  has_one :evidence_pack, dependent: :destroy
   
-  validates :tenant, presence: true
-  validates :webhook_event, presence: true
-  validates :status, inclusion: { in: %w[new triaging triaged resolved false_positive] }, if: -> { status.present? }
-  validates :severity, inclusion: { in: [1, 2, 3, 4, 5] }, if: -> { severity.present? }
+  # Énumérations pour la sécurité des données
+  enum status: {
+    new: 'new',
+    triaging: 'triaging',
+    triaged: 'triaged',
+    resolved: 'resolved',
+    false_positive: 'false_positive'
+  }, _prefix: :status
 
-  scope :by_status, ->(status) { where(status: status) }
-  scope :recent, -> { order(created_at: :desc) }
+  # Validations strictes
+  validates :source, presence: true
+  validates :severity, inclusion: { in: 1..5 }
+  validates :status, presence: true
+
+  # Portées (Scopes) pour le Dashboard de Nawal
+  scope :critical, -> { where('severity >= 4') }
+  scope :recent, -> { order(created_at: :desc).limit(10) }
+
+  def critical?
+    severity >= 4
+  end
 end

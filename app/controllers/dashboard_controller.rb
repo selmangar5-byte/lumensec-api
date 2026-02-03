@@ -1,17 +1,19 @@
 # frozen_string_literal: true
-# Copyright © 2025 Lumensec Inc. All rights reserved.
 
 class DashboardController < ApplicationController
   def stats
+    scope = tenant_scope
     render json: {
-      total_incidents: AnalysisResult.count,
-      by_status: AnalysisResult.group(:status).count,
-      by_severity: AnalysisResult.group(:severity).count,
-      recent_incidents: AnalysisResult.order(created_at: :desc).limit(10),
+      total_incidents: scope.count,
+      by_status: scope.group(:status).count,
+      by_severity: scope.group(:severity).count,
+      recent_incidents: scope.order(created_at: :desc).limit(10),
       summary: {
-        new: AnalysisResult.where(status: "new").count,
-        triaging: AnalysisResult.where(status: "triaging").count,
-        resolved: AnalysisResult.where(status: "resolved").count
+        new: scope.where(status: 'new').count,
+        triaging: scope.where(status: 'triaging').count,
+        triaged: scope.where(status: 'triaged').count,
+        resolved: scope.where(status: 'resolved').count,
+        false_positive: scope.where(status: 'false_positive').count
       }
     }
   end
