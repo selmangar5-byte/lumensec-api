@@ -1,46 +1,44 @@
 source "https://rubygems.org"
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
+ruby "3.1.2"
+
+# Rails
 gem "rails", "~> 7.2.3"
-# Use sqlite3 as the database for Active Record
-# gem "sqlite3", ">= 1.4"  # disabled: using postgres for Lumensec
-# Use the Puma web server [https://github.com/puma/puma]
+
+# Web server
 gem "puma", ">= 5.0"
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-# gem "jbuilder"
-# Use Redis adapter to run Action Cable in production
-# gem "redis", ">= 4.0.1"
 
-# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem "kredis"
+# Database (PostgreSQL — Lumensec)
+gem "pg", "~> 1.5"
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
-
-# Reduces boot times through caching; required in config/boot.rb
+# Performance
 gem "bootsnap", require: false
 
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+# Timezone data for Windows
+gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
 
-# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
-# gem "rack-cors"
+# Security / Auth
+gem "bcrypt", "~> 3.1.7"
+gem "jwt", "~> 2.7"
+
+# CORS
+gem "rack-cors", "~> 3.0"
+
+# PDF / Evidence Pack
+gem "grover"          # HTML → PDF (Evidence Pack export)
+gem "prawn", "~> 2.4" # (non utilisé actuellement, conservé)
+gem "prawn-table", "~> 0.2"
+
+# Utilities
+gem "matrix"
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  # Debugging
   gem "debug", platforms: %i[ mri mswin mswin64 mingw x64_mingw ], require: "debug/prelude"
 
-  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
+  # Security scanner
   gem "brakeman", require: false
 
-  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
+  # Ruby / Rails style
   gem "rubocop-rails-omakase", require: false
 end
-
-
-
-# Use PostgreSQL for Active Record (Lumensec)
-gem "pg", "~> 1.5"

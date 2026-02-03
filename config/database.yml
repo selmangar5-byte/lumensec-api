@@ -1,20 +1,17 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: localhost
-  port: 5432
-  username: postgres
-  password: postgres
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
 
 development:
   <<: *default
-  database: lumensec_api_development
+  database: lumensec_development
 
 test:
   <<: *default
-  database: lumensec_api_test
+  database: lumensec_test
 
 production:
   <<: *default
-  database: lumensec_api_production
+  database: lumensec_production

@@ -1,20 +1,60 @@
-class AnalysisResultsController < ApplicationController
-  protect_from_forgery with: :null_session
+# frozen_string_literal: true
 
-  def create
-    analysis_result = AnalysisResult.create!(
-      tenant_id: params[:tenant_id],
-      webhook_event_id: params[:correlation_id],
-      correlation_id: params[:correlation_id],
-      source: params[:source],
-      event_key: params[:event_key].to_json,
-      triage: params[:triage].to_json,
-      narrative: params[:narrative].to_json,
-      evidence: params[:evidence].to_json
+class AnalysisResultsController < ApplicationController
+  before_action :set_analysis_result, only: [:show, :update, :evidence_pack, :export_pdf]
+
+  def index
+    render json: tenant_scope.order(created_at: :desc)
+  end
+
+  def show
+    render json: @analysis_result.as_json(include: :evidence_pack)
+  end
+
+  def update
+    if @analysis_result.update(analysis_result_params)
+      render json: @analysis_result
+    else
+      render json: { error: @analysis_result.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def evidence_pack
+    @pack = @analysis_result.evidence_pack
+    if @pack
+      render json: @pack
+    else
+      render json: { error: "No evidence found" }, status: :not_found
+    end
+  end
+
+  def export_pdf
+    @pack = @analysis_result.evidence_pack
+    return render json: { error: "Evidence pack missing" }, status: :not_found unless @pack
+
+    html = render_to_string(
+      template: 'evidence_packs/pdf_template',
+      layout: 'pdf',
+      locals: { pack: @pack, incident: @analysis_result }
     )
 
-    head :no_content
-  rescue => e
-    render json: { error: e.message }, status: :unprocessable_entity
+    begin
+      grover = Grover.new(html, format: 'A4')
+      pdf    = grover.to_pdf
+      send_data pdf, filename: "lumensec_evidence_#{@analysis_result.id}.pdf", type: 'application/pdf'
+    rescue => e
+      # Fallback : Grover non configuré. html_safe à remplacer en P2.
+      render html: html.html_safe
+    end
+  end
+
+  private
+
+  def set_analysis_result
+    @analysis_result = tenant_scope.find(params[:id])
+  end
+
+  def analysis_result_params
+    params.require(:analysis_result).permit(:status)
   end
 end

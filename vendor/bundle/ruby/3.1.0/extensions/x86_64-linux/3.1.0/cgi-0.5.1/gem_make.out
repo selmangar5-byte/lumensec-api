@@ -1,5 +1,5 @@
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/cgi-0.5.1/ext/cgi/escape
-/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260116-16699-vngm09.rb extconf.rb
+/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260124-17433-u9il2o.rb extconf.rb
 creating Makefile
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/cgi-0.5.1/ext/cgi/escape
@@ -12,4 +12,4 @@ linking shared-object cgi/escape.so
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/cgi-0.5.1/ext/cgi/escape
 make DESTDIR\= install
-/usr/bin/install -c -m 0755 escape.so ./.gem.20260116-16699-zptp94/cgi
+/usr/bin/install -c -m 0755 escape.so ./.gem.20260124-17433-sge2md/cgi
