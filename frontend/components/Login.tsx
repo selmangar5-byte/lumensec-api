@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { lumensecApi } from '../services/api';
 
 interface LoginProps {
-  onSuccess: () => void;
+  onLogin: () => void;
 }
 
-const Login: React.FC<LoginProps> = ({ onSuccess }) => {
+const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [passcode, setPasscode] = useState('');
   const [errorCount, setErrorCount] = useState(0);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -18,11 +17,10 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
     e.preventDefault();
     setIsAuthenticating(true);
 
-    // Simulation de décryptage pour l'immersion
-    setTimeout(async () => {
-      const success = await lumensecApi.login(passcode);
-      if (success) {
-        onSuccess();
+    // Simulation de décryptage
+    setTimeout(() => {
+      if (passcode === 'NAWAL-SOC-01') {
+        onLogin();
       } else {
         setErrorCount(prev => prev + 1);
         setIsAuthenticating(false);
@@ -103,7 +101,7 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
         <div className="mt-12 flex flex-col items-center space-y-6">
           <div className="text-slate-600 text-[8px] font-mono uppercase tracking-widest leading-loose">
             Terminal Node: SOC-ALPHA-01<br/>
-            Target: Rails-API:3000
+            Target: Render API
           </div>
           
           <div className="flex space-x-4">
@@ -114,7 +112,7 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
               [ Flush Cache ]
             </button>
             <a 
-              href="http://localhost:3000" 
+              href="https://lumensec-api.onrender.com" 
               target="_blank" 
               className="px-4 py-2 border border-slate-800 rounded-lg text-[7px] text-slate-500 hover:text-emerald-400 uppercase tracking-widest font-black transition-all hover:bg-slate-800"
             >
