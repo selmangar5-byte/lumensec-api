@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { lumensecApi } from './services/api';
 import { DashboardStats } from './types';
 import Dashboard from './components/Dashboard';
+import Header from './components/Header';
 import Login from './components/Login';
 
 export default function App() {
@@ -43,5 +44,19 @@ export default function App() {
     );
   }
 
-  return <Dashboard stats={stats} onSelectIncident={(id) => console.log('Incident:', id)} />;
+  return (
+    <div className="min-h-screen bg-slate-950">
+      <Header />
+      <main className="container mx-auto px-8 py-12">
+        <Dashboard stats={stats} onSelectIncident={(id) => console.log('Incident:', id)} />
+      </main>
+      <footer className="border-t border-slate-800 py-8 mt-20">
+        <div className="container mx-auto px-8 text-center">
+          <p className="text-[10px] text-slate-600 font-mono uppercase tracking-[0.3em]">
+            © 2025 Lumensec // Security Operating Center // Project Finalized by Nawal
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
 }
