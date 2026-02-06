@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.3.0"
+ruby "3.1.2"
 
 # Rails
 gem "rails", "~> 7.2.3"
