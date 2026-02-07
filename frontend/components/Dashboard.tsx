@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Incident, DashboardStats } from '../types';
 import KPISection from './KPISection';
@@ -7,6 +6,7 @@ import SOCTerminal from './SOCTerminal';
 import SystemHealth from './SystemHealth';
 import ReportCenter from './ReportCenter';
 import AuditLogExplorer from './AuditLogExplorer';
+import CommunityRulesMarket from './CommunityRulesMarket';
 
 interface DashboardProps {
   stats: DashboardStats;
@@ -126,21 +126,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
 
           <ReportCenter />
           <SystemHealth />
-          
-          <div className="bg-slate-900/60 border border-indigo-500/20 rounded-[2rem] p-8 shadow-2xl group">
-             <h3 className="text-[10px] font-black text-white uppercase tracking-widest italic mb-6">Community Rules Market</h3>
-             <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-                   <span className="text-[9px] font-bold text-slate-300">RDP-Bruteforce-Block</span>
-                   <span className="text-[8px] font-black text-emerald-500 uppercase">Installed</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800 opacity-50">
-                   <span className="text-[9px] font-bold text-slate-300">Office365-Exfil-Detect</span>
-                   <button className="text-[8px] font-black text-indigo-400 uppercase hover:text-white transition-colors">Install</button>
-                </div>
-             </div>
-          </div>
-
+          <CommunityRulesMarket />
           <CyberMap />
         </div>
       </div>
