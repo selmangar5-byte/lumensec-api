@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DashboardController < ApplicationController
+class Api::V1::DashboardController < ApplicationController
   def stats
     scope = tenant_scope
     render json: {
