@@ -25,6 +25,13 @@ export default function App() {
     setSelectedIncidentId(String(id));
   };
 
+  const selectedIncident = selectedIncidentId && stats
+    ? stats.recent_incidents.find(i => String(i.id) === selectedIncidentId)
+    : null;
+
+  console.log('SELECTED ID:', selectedIncidentId);
+  console.log('SELECTED INCIDENT:', selectedIncident);
+
   if (!authenticated) {
     return <Login onLogin={() => setAuthenticated(true)} />;
   }
@@ -51,18 +58,17 @@ export default function App() {
     );
   }
 
-  const selectedIncident = selectedIncidentId 
-    ? stats.recent_incidents.find(i => String(i.id) === selectedIncidentId)
-    : null;
-
-  console.log('SELECTED ID:', selectedIncidentId);
-  console.log('SELECTED INCIDENT:', selectedIncident);
-
   return (
     <div className="min-h-screen bg-slate-950">
       <Header />
       <main className="container mx-auto px-8 py-12">
         <Dashboard stats={stats} onSelectIncident={handleSelectIncident} />
+        {selectedIncident && (
+          <IncidentDetail 
+            incident={selectedIncident} 
+            onClose={() => setSelectedIncidentId(null)} 
+          />
+        )}
       </main>
       <footer className="border-t border-slate-800 py-8 mt-20">
         <div className="container mx-auto px-8 text-center">
@@ -71,16 +77,6 @@ export default function App() {
           </p>
         </div>
       </footer>
-      
-      {selectedIncident && (
-        <IncidentDetail 
-          incident={selectedIncident} 
-          onClose={() => {
-            console.log('CLOSING MODAL');
-            setSelectedIncidentId(null);
-          }} 
-        />
-      )}
     </div>
   );
 }
