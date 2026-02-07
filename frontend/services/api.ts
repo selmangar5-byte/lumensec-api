@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://lumensec-api.onrender.com";
+const API_BASE_URL = "https://lumensec-api.onrender.com/api/v1";
 
 const getHeaders = () => ({
   "Content-Type": "application/json",
