@@ -6,7 +6,7 @@ import CyberMap from './CyberMap';
 import SOCTerminal from './SOCTerminal';
 import SystemHealth from './SystemHealth';
 import ReportCenter from './ReportCenter';
-import AuditLogView from './AuditLogView';
+import AuditLogExplorer from './AuditLogExplorer';
 
 interface DashboardProps {
   stats: DashboardStats;
@@ -102,7 +102,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
             </div>
           </div>
           
-          <AuditLogView />
+          <AuditLogExplorer />
           <SOCTerminal />
         </div>
 
