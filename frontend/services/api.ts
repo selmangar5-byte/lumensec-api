@@ -24,5 +24,10 @@ export const lumensecApi = {
   
   getAuditLogs: async () => {
     return [];
+  },
+
+  downloadActivityReport: (period: string) => {
+    console.log(`Downloading ${period} report...`);
+    // Fonction stub pour l'instant
   }
 };
