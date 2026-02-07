@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://lumensec-api.onrender.com";
 
 const getHeaders = () => ({
   "Content-Type": "application/json",
@@ -23,7 +23,6 @@ export const lumensecApi = {
   },
   
   getAuditLogs: async () => {
-    // Fonction stub - retourne un tableau vide pour l'instant
     return [];
   }
 };
