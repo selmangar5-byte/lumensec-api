@@ -1,0 +1,19 @@
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/debug-1.11.1/ext/debug
+/home/vscode/.rbenv/versions/3.2.0/bin/ruby -I /home/vscode/.rbenv/versions/3.2.0/lib/ruby/3.2.0 extconf.rb
+creating Makefile
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-ivhhuj sitelibdir\=./.gem.20260206-22373-ivhhuj clean
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-ivhhuj sitelibdir\=./.gem.20260206-22373-ivhhuj
+compiling debug.c
+compiling iseq_collector.c
+linking shared-object debug/debug.so
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-ivhhuj sitelibdir\=./.gem.20260206-22373-ivhhuj install
+/usr/bin/install -c -m 0755 debug.so ./.gem.20260206-22373-ivhhuj/debug
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-ivhhuj sitelibdir\=./.gem.20260206-22373-ivhhuj clean

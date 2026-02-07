@@ -1,87 +1,88 @@
+import React from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
-import React, { useState, useEffect } from 'react';
-import { lumensecApi } from '../services/api';
-
-interface HeaderProps {
-  currentView?: 'dashboard' | 'cartography';
-  onViewChange?: (view: 'dashboard' | 'cartography') => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => {
-  const [time, setTime] = useState(new Date());
-  const [load, setLoad] = useState(12);
-  const currentTenant = localStorage.getItem('lumensec_tenant_id') || '1';
-
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    const loadTimer = setInterval(() => setLoad(prev => Math.max(5, Math.min(45, prev + (Math.random() * 4 - 2)))), 3000);
-    return () => {
-      clearInterval(timer);
-      clearInterval(loadTimer);
-    };
-  }, []);
+export default function Header() {
+  const { language, setLanguage, t } = useLanguage();
 
   return (
-    <header className="bg-slate-950/80 border-b border-slate-800/50 sticky top-0 z-50 backdrop-blur-2xl overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50 animate-[scan_4s_linear_infinite]"></div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          <div className="flex items-center space-x-6">
-            <div className="relative group cursor-pointer" onClick={() => onViewChange?.('dashboard')}>
-               <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-100 transition duration-1000"></div>
-               <div className="relative w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center border border-slate-800 shadow-2xl transition-all group-hover:scale-105">
-                 <span className="text-white font-black text-2xl tracking-tighter italic">L</span>
-               </div>
+    <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
+      <div className="container mx-auto px-8 py-6">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <span className="text-2xl font-black text-white italic">L</span>
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <h1 className="text-xl font-black tracking-tighter text-white uppercase leading-none italic">Lumensec</h1>
-                <select 
-                  value={currentTenant}
-                  onChange={(e) => lumensecApi.setTenant(e.target.value)}
-                  className="bg-emerald-500/10 text-emerald-400 text-[10px] px-3 py-1 rounded-lg border border-emerald-500/20 font-black tracking-widest uppercase outline-none focus:border-emerald-500 transition-all cursor-pointer"
-                >
-                  <option value="1" className="bg-slate-950">Pilot-Alpha (Quebec)</option>
-                  <option value="2" className="bg-slate-950">Pilot-Beta (Montreal)</option>
-                  <option value="3" className="bg-slate-950">Global-Demo</option>
-                </select>
-              </div>
+              <h1 className="text-2xl font-black text-white tracking-tight italic">
+                LUMENSEC
+              </h1>
+              <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest">
+                Security Operating Center
+              </p>
             </div>
           </div>
 
-          <nav className="hidden lg:flex items-center space-x-2 bg-slate-900/50 p-1.5 rounded-2xl border border-slate-800">
-             <button 
-               onClick={() => onViewChange?.('dashboard')}
-               className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${currentView === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'}`}
-             >
-               Dashboard
-             </button>
-             <button 
-               onClick={() => onViewChange?.('cartography')}
-               className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${currentView === 'cartography' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'}`}
-             >
-               Cartography
-             </button>
-          </nav>
+          {/* Navigation */}
+          <nav className="flex items-center space-x-8">
+            <a href="#" className="text-sm font-bold text-white uppercase tracking-wider hover:text-indigo-400 transition-colors">
+              {t.dashboard}
+            </a>
+            <a href="#" className="text-sm font-bold text-slate-500 uppercase tracking-wider hover:text-white transition-colors">
+              {t.cartography}
+            </a>
+            
+            {/* Language Switcher */}
+            <div className="flex items-center gap-2 ml-4 pl-4 border-l border-slate-800">
+              <button
+                onClick={() => setLanguage('fr')}
+                className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
+                  language === 'fr'
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
+                    : 'text-slate-500 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                FR
+              </button>
+              <button
+                onClick={() => setLanguage('en')}
+                className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
+                  language === 'en'
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
+                    : 'text-slate-500 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                EN
+              </button>
+            </div>
 
-          <div className="flex items-center space-x-6">
-            <div className="hidden md:flex flex-col text-right mr-2">
-               <span className="text-slate-500 text-[9px] font-mono uppercase tracking-widest">Global Ops Time</span>
-               <span className="text-white text-[11px] font-black font-mono tracking-widest">{time.toLocaleTimeString()}</span>
+            {/* User Menu */}
+            <div className="flex items-center space-x-3 pl-4 border-l border-slate-800">
+              <div className="text-right">
+                <p className="text-xs font-bold text-white">Nawal</p>
+                <p className="text-[9px] text-slate-500 font-mono">SOC ADMIN</p>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+                <span className="text-sm font-bold text-white">N</span>
+              </div>
             </div>
-            <div 
-              className="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 p-1 flex items-center justify-center overflow-hidden hover:border-emerald-500 transition-colors cursor-pointer group" 
-              onClick={() => lumensecApi.logout()}
-              title="Logout / Switch Operator"
-            >
-              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Nawal&backgroundColor=0f172a`} alt="Avatar" className="w-full h-full object-cover rounded-xl group-hover:scale-110 transition-transform" />
-            </div>
+          </nav>
+        </div>
+
+        {/* Tenant Selector */}
+        <div className="mt-6 flex items-center space-x-3">
+          <select className="bg-slate-900 border border-indigo-500/30 text-white text-xs font-mono px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option>PILOT-ALPHA (QUEBEC)</option>
+            <option>PILOT-BETA (MONTREAL)</option>
+            <option>GLOBAL-DEMO</option>
+          </select>
+          <div className="flex items-center space-x-2 text-[10px] font-mono text-slate-500">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <span className="uppercase tracking-wider">GLOBAL SHS TIME</span>
+            <span className="text-white font-bold">{new Date().toLocaleTimeString('fr-FR')}</span>
           </div>
         </div>
       </div>
     </header>
   );
-};
-
-export default Header;
+}

@@ -1,12 +1,13 @@
-
 import React from 'react';
 import { Incident, DashboardStats } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
 import KPISection from './KPISection';
 import CyberMap from './CyberMap';
 import SOCTerminal from './SOCTerminal';
 import SystemHealth from './SystemHealth';
 import ReportCenter from './ReportCenter';
-import AuditLogView from './AuditLogView';
+import AuditLogExplorer from './AuditLogExplorer';
+import CommunityRulesMarket from './CommunityRulesMarket';
 
 interface DashboardProps {
   stats: DashboardStats;
@@ -14,20 +15,25 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
+  const { t } = useLanguage();
+  
   const getSeverityLabel = (severity: number) => {
     switch(severity) {
-      case 5: return { label: 'CRITICAL', color: 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]' };
-      case 4: return { label: 'HIGH', color: 'bg-orange-500/10 text-orange-500 border-orange-500/20' };
-      case 3: return { label: 'MEDIUM', color: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' };
-      default: return { label: 'LOW', color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' };
+      case 5: return { label: t.critical, color: 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]' };
+      case 4: return { label: t.high, color: 'bg-orange-500/10 text-orange-500 border-orange-500/20' };
+      case 3: return { label: t.medium, color: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' };
+      default: return { label: t.low, color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' };
     }
   };
 
   const getStatusDisplay = (status: string) => {
     switch(status) {
-      case 'auto_neutralized': return { label: 'IMMUNIZED', color: 'text-emerald-400' };
-      case 'silenced': return { label: 'SILENCED', color: 'text-slate-500' };
-      case 'remediated': return { label: 'REMEDIATED', color: 'text-blue-400' };
+      case 'auto_neutralized': return { label: t.immunized, color: 'text-emerald-400' };
+      case 'silenced': return { label: t.silenced, color: 'text-slate-500' };
+      case 'remediated': return { label: t.remediated, color: 'text-blue-400' };
+      case 'new': return { label: t.new, color: 'text-indigo-400' };
+      case 'triaging': return { label: t.triaging, color: 'text-yellow-400' };
+      case 'resolved': return { label: t.resolved, color: 'text-green-400' };
       default: return { label: status.toUpperCase(), color: 'text-indigo-400' };
     }
   };
@@ -46,10 +52,10 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
               <div>
                 <h2 className="text-xl font-black text-white tracking-tight uppercase italic flex items-center">
                    <span className="w-2 h-2 bg-emerald-500 rounded-full mr-3 animate-pulse shadow-[0_0_8px_#10b981]"></span>
-                   Ingestion Layer: MASTER RADAR
+                   {t.ingestionLayer}
                 </h2>
                 <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mt-1 italic">
-                  Webhook API (84%) + Email Gateway (16%)
+                  {t.webhookApi} (84%) + {t.emailGateway} (16%)
                 </p>
               </div>
             </div>
@@ -58,10 +64,10 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-950/40 text-slate-500 text-[9px] font-black uppercase tracking-[0.2em]">
-                    <th className="px-10 py-5 border-b border-slate-800/50">Trace ID</th>
-                    <th className="px-10 py-5 border-b border-slate-800/50">Severity</th>
-                    <th className="px-10 py-5 border-b border-slate-800/50">Inference Status</th>
-                    <th className="px-10 py-5 border-b border-slate-800/50 text-right">Action</th>
+                    <th className="px-10 py-5 border-b border-slate-800/50">{t.traceId}</th>
+                    <th className="px-10 py-5 border-b border-slate-800/50">{t.severity}</th>
+                    <th className="px-10 py-5 border-b border-slate-800/50">{t.inferenceStatus}</th>
+                    <th className="px-10 py-5 border-b border-slate-800/50 text-right">{t.action}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/30">
@@ -102,7 +108,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
             </div>
           </div>
           
-          <AuditLogView />
+          <AuditLogExplorer />
           <SOCTerminal />
         </div>
 
@@ -112,7 +118,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
             <div className="absolute top-0 right-0 p-4 opacity-10">
               <svg className="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
             </div>
-            <h3 className="text-white font-black text-xs uppercase tracking-widest italic mb-4">Loi 25 Compliance Score</h3>
+            <h3 className="text-white font-black text-xs uppercase tracking-widest italic mb-4">{t.loi25Compliance}</h3>
             <div className="flex items-center space-x-4 mb-6">
                <span className="text-4xl font-black text-emerald-400 italic">98%</span>
                <div className="flex-grow h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -120,27 +126,13 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
                </div>
             </div>
             <p className="text-[9px] text-slate-400 font-medium leading-relaxed italic">
-              Nawal, vos données sont protégées et isolées. L'intégrité SHA-256 est vérifiée sur chaque pack de preuves.
+              {t.dataProtected}
             </p>
           </div>
 
           <ReportCenter />
           <SystemHealth />
-          
-          <div className="bg-slate-900/60 border border-indigo-500/20 rounded-[2rem] p-8 shadow-2xl group">
-             <h3 className="text-[10px] font-black text-white uppercase tracking-widest italic mb-6">Community Rules Market</h3>
-             <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-                   <span className="text-[9px] font-bold text-slate-300">RDP-Bruteforce-Block</span>
-                   <span className="text-[8px] font-black text-emerald-500 uppercase">Installed</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800 opacity-50">
-                   <span className="text-[9px] font-bold text-slate-300">Office365-Exfil-Detect</span>
-                   <button className="text-[8px] font-black text-indigo-400 uppercase hover:text-white transition-colors">Install</button>
-                </div>
-             </div>
-          </div>
-
+          <CommunityRulesMarket />
           <CyberMap />
         </div>
       </div>

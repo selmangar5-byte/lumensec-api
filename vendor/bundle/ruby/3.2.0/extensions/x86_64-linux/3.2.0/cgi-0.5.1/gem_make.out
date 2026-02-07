@@ -1,0 +1,18 @@
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+/home/vscode/.rbenv/versions/3.2.0/bin/ruby -I /home/vscode/.rbenv/versions/3.2.0/lib/ruby/3.2.0 extconf.rb
+creating Makefile
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-k7bpxv sitelibdir\=./.gem.20260206-22373-k7bpxv clean
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-k7bpxv sitelibdir\=./.gem.20260206-22373-k7bpxv
+compiling escape.c
+linking shared-object cgi/escape.so
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-k7bpxv sitelibdir\=./.gem.20260206-22373-k7bpxv install
+/usr/bin/install -c -m 0755 escape.so ./.gem.20260206-22373-k7bpxv/cgi
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-k7bpxv sitelibdir\=./.gem.20260206-22373-k7bpxv clean

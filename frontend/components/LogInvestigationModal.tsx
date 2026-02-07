@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface LogInvestigationModalProps {
   log: any;
@@ -6,36 +7,38 @@ interface LogInvestigationModalProps {
 }
 
 export default function LogInvestigationModal({ log, onClose }: LogInvestigationModalProps) {
+  const { t } = useLanguage();
+  
   const sections = [
     {
       icon: '📅',
-      title: 'Timeline Complète',
-      subtitle: 'Event Sequence & Correlation Analysis',
-      description: 'Voyez minute par minute ce qui s\'est passé avant, pendant et après l\'alerte'
+      title: t.timelineComplete,
+      subtitle: t.eventSequence,
+      description: t.timelineDesc
     },
     {
       icon: '📦',
-      title: 'Evidence Packs',
-      subtitle: 'Forensic Artifacts & IOCs (Indicators of Compromise)',
-      description: 'Fichiers suspects, captures d\'écran, emails collectés automatiquement comme preuves'
+      title: t.evidencePacks,
+      subtitle: t.forensicArtifacts,
+      description: t.evidenceDesc
     },
     {
       icon: '🌍',
-      title: 'Source Attribution',
-      subtitle: 'User-Agent, Geolocalisation IP & Device Fingerprinting',
-      description: 'D\'où vient la menace: pays, ville, type d\'appareil utilisé pour l\'attaque'
+      title: t.sourceAttribution,
+      subtitle: t.userAgent,
+      description: t.sourceDesc
     },
     {
       icon: '⚙️',
-      title: 'Stacktrace Technique',
-      subtitle: 'Code Execution Path & Vulnerability Exploitation',
-      description: 'Pour votre équipe IT: code exact exploité et lignes de système affectées'
+      title: t.stacktrace,
+      subtitle: t.codeExecution,
+      description: t.stacktraceDesc
     },
     {
       icon: '✅',
-      title: 'Remediation Playbook',
-      subtitle: 'Automated Response Actions & SOAR Integration',
-      description: 'Ce que Lumensec vous conseille: bloquer IP, réinitialiser mot de passe, patcher serveur'
+      title: t.remediationPlaybook,
+      subtitle: t.automatedResponse,
+      description: t.remediationDesc
     }
   ];
 
@@ -51,11 +54,11 @@ export default function LogInvestigationModal({ log, onClose }: LogInvestigation
                   <span className="text-2xl">🔍</span>
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Investigation Détaillée</h2>
-                  <p className="text-sm text-orange-400 font-mono">Event #{log.id} • {log.timestamp}</p>
+                  <h2 className="text-2xl font-bold text-white">{t.detailedInvestigation}</h2>
+                  <p className="text-sm text-orange-400 font-mono">{t.event} #{log.id} • {log.timestamp}</p>
                 </div>
               </div>
-              <p className="text-slate-400 text-sm italic">Dossier complet de l'incident</p>
+              <p className="text-slate-400 text-sm italic">{t.completeFile}</p>
             </div>
             <button
               onClick={onClose}
@@ -84,7 +87,7 @@ export default function LogInvestigationModal({ log, onClose }: LogInvestigation
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                       </svg>
-                      <span>Données disponibles dans version complète</span>
+                      <span>{t.dataAvailable}</span>
                     </div>
                   </div>
                 </div>
@@ -97,13 +100,13 @@ export default function LogInvestigationModal({ log, onClose }: LogInvestigation
         <div className="border-t border-orange-500/30 p-6 bg-slate-900/50">
           <div className="flex items-center justify-between">
             <p className="text-xs text-slate-500">
-              © 2025 Lumensec - Investigation Forensique Automatisée
+              © 2025 Lumensec - {t.forensicInvestigation}
             </p>
             <div className="flex items-center gap-2 text-orange-400 text-sm font-medium">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
-              <span>Disponible dans Lumensec Enterprise</span>
+              <span>{t.availableEnterprise}</span>
             </div>
           </div>
         </div>

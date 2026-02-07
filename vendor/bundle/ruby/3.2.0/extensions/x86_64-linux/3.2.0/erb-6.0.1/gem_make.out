@@ -1,0 +1,19 @@
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/erb-6.0.1/ext/erb/escape
+/home/vscode/.rbenv/versions/3.2.0/bin/ruby -I /home/vscode/.rbenv/versions/3.2.0/lib/ruby/3.2.0 extconf.rb
+checking for rb_ext_ractor_safe() in ruby.h... yes
+creating Makefile
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/erb-6.0.1/ext/erb/escape
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-e9jrqk sitelibdir\=./.gem.20260206-22373-e9jrqk clean
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/erb-6.0.1/ext/erb/escape
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-e9jrqk sitelibdir\=./.gem.20260206-22373-e9jrqk
+compiling escape.c
+linking shared-object erb/escape.so
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/erb-6.0.1/ext/erb/escape
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-e9jrqk sitelibdir\=./.gem.20260206-22373-e9jrqk install
+/usr/bin/install -c -m 0755 escape.so ./.gem.20260206-22373-e9jrqk/erb
+
+current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.2.0/gems/erb-6.0.1/ext/erb/escape
+make DESTDIR\= sitearchdir\=./.gem.20260206-22373-e9jrqk sitelibdir\=./.gem.20260206-22373-e9jrqk clean

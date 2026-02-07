@@ -285,3 +285,4 @@ RUBY VERSION
 
 BUNDLED WITH
    2.4.1
+curl -s https://lumensec-api.onrender.com/dashboard/stats -H "X-Tenant-ID: 1" | jq '.total_incidents'
