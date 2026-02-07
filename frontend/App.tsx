@@ -4,11 +4,13 @@ import { DashboardStats } from './types';
 import Dashboard from './components/Dashboard';
 import Header from './components/Header';
 import Login from './components/Login';
+import IncidentDetail from './components/IncidentDetail';
 
 export default function App() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
 
   useEffect(() => {
     if (authenticated) {
@@ -44,11 +46,15 @@ export default function App() {
     );
   }
 
+  const selectedIncident = selectedIncidentId 
+    ? stats.recent_incidents.find(i => i.id === selectedIncidentId)
+    : null;
+
   return (
     <div className="min-h-screen bg-slate-950">
       <Header />
       <main className="container mx-auto px-8 py-12">
-        <Dashboard stats={stats} onSelectIncident={(id) => console.log('Incident:', id)} />
+        <Dashboard stats={stats} onSelectIncident={setSelectedIncidentId} />
       </main>
       <footer className="border-t border-slate-800 py-8 mt-20">
         <div className="container mx-auto px-8 text-center">
@@ -57,6 +63,13 @@ export default function App() {
           </p>
         </div>
       </footer>
+      
+      {selectedIncident && (
+        <IncidentDetail 
+          incident={selectedIncident} 
+          onClose={() => setSelectedIncidentId(null)} 
+        />
+      )}
     </div>
   );
 }
