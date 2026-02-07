@@ -64,7 +64,11 @@ export default function AuditLogExplorer() {
           </thead>
           <tbody>
             {filteredLogs.map((log) => (
-              <tr key={log.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors group">
+              <tr 
+  key={log.id} 
+  onClick={() => alert('📊 Investigation Détaillée\n\nCette fonctionnalité affichera:\n• Timeline complète de l\'événement\n• Evidence Packs liés\n• User-Agent & Geolocalisation IP\n• Stacktrace technique\n• Actions recommandées\n\n✨ Disponible dans version complète')}
+  className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors group cursor-pointer"
+>
                 <td className="px-4 py-3">
                   <div className="text-xs text-slate-400 font-mono">{log.timestamp}</div>
                 </td>
