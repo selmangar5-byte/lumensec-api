@@ -37,8 +37,8 @@ export default function ReportingCenter({ stats }: ReportingCenterProps) {
                   </svg>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-semibold text-white">Journalier</div>
-                  <div className="text-[10px] text-slate-400 font-mono">Activités des dernières 24h</div>
+                  <div className="text-sm font-semibold text-white">Daily</div>
+                  <div className="text-[10px] text-slate-400 font-mono">Last 24h Activities</div>
                 </div>
               </div>
               <svg className="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,8 +59,8 @@ export default function ReportingCenter({ stats }: ReportingCenterProps) {
                   </svg>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-semibold text-white">Hebdo</div>
-                  <div className="text-[10px] text-slate-400 font-mono">Tendances d'immunité 7j</div>
+                  <div className="text-sm font-semibold text-white">Weekly</div>
+                  <div className="text-[10px] text-slate-400 font-mono">7-day Immunity Trends</div>
                 </div>
               </div>
               <svg className="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -81,8 +81,8 @@ export default function ReportingCenter({ stats }: ReportingCenterProps) {
                   </svg>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-semibold text-white">Mensuel</div>
-                  <div className="text-[10px] text-slate-400 font-mono">Bilan de sécurité global</div>
+                  <div className="text-sm font-semibold text-white">Monthly</div>
+                  <div className="text-[10px] text-slate-400 font-mono">Global Security Summary</div>
                 </div>
               </div>
               <svg className="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">

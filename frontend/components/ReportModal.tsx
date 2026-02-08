@@ -10,9 +10,9 @@ interface ReportModalProps {
 
 export default function ReportModal({ type, stats, onClose }: ReportModalProps) {
   const getTitle = () => {
-    if (type === 'daily') return 'Rapport Journalier - 24h';
-    if (type === 'weekly') return 'Rapport Hebdomadaire - 7 jours';
-    return 'Bilan Mensuel';
+    if (type === 'daily') return 'Daily Report - 24h';
+    if (type === 'weekly') return 'Weekly Report - 7 days';
+    return 'Monthly Summary';
   };
 
   const handleDownloadPDF = () => {
@@ -23,46 +23,46 @@ export default function ReportModal({ type, stats, onClose }: ReportModalProps) 
 
   const getDailyData = () => ({
     kpis: [
-      { label: 'Alertes Actives', value: stats?.active_alerts || 102, status: 'NORMAL', color: 'blue' },
-      { label: 'Auto-Neutralisés', value: stats?.auto_neutralized || 42, status: 'EXCELLENT', color: 'green' },
-      { label: 'Bruit Réduit', value: (stats?.noise_reduction || 128) + ' incidents', status: 'OPTIMAL', color: 'indigo' },
-      { label: 'Niveau Menace', value: (stats?.threat_level || 2.1) + '/5', status: 'FAIBLE', color: 'green' },
+      { label: 'Active Alerts', value: stats?.active_alerts || 102, status: 'NORMAL', color: 'blue' },
+      { label: 'Auto-Neutralized', value: stats?.auto_neutralized || 42, status: 'EXCELLENT', color: 'green' },
+      { label: 'Noise Reduced', value: (stats?.noise_reduction || 128) + ' incidents', status: 'OPTIMAL', color: 'indigo' },
+      { label: 'Threat Level', value: (stats?.threat_level || 2.1) + '/5', status: 'LOW', color: 'green' },
     ],
     summary: [
-      'Activité de sécurité normale au cours des dernières 24 heures.',
-      'Le système a automatiquement neutralisé 42 incidents de faible criticité.',
-      '128 faux positifs ont été filtrés grâce à l\'intégration SMA-256.',
-      'Aucune action manuelle requise pour le moment.',
+      'Normal security activity over the last 24 hours.',
+      'The system automatically neutralized 42 low-criticality incidents.',
+      '128 false positives were filtered through SMA-256 integration.',
+      'No manual action required at this time.',
     ]
   });
 
   const getWeeklyData = () => ({
     kpis: [
-      { label: 'Incidents Détectés', value: '714', trend: '+12%', color: 'yellow' },
-      { label: 'Neutralisations Auto', value: '294', trend: '+8%', color: 'green' },
-      { label: 'Interventions Manuelles', value: '18', trend: '-15%', color: 'green' },
-      { label: 'Temps Moyen Résolution', value: '12 min', trend: '-22%', color: 'green' },
+      { label: 'Incidents Detected', value: '714', trend: '+12%', color: 'yellow' },
+      { label: 'Auto Neutralizations', value: '294', trend: '+8%', color: 'green' },
+      { label: 'Manual Interventions', value: '18', trend: '-15%', color: 'green' },
+      { label: 'Avg Resolution Time', value: '12 min', trend: '-22%', color: 'green' },
     ],
     highlights: [
-      '✓ Réduction de 22% du temps moyen de résolution grâce à l\'automatisation',
-      '✓ 294 incidents neutralisés automatiquement (41% du total)',
-      '✓ Amélioration de 15% de l\'immunité système via règles communautaires',
-      '⚠ Pic d\'activité détecté mardi 4/02 (investigation en cours)',
+      '✓ 22% reduction in average resolution time through automation',
+      '✓ 294 incidents neutralized automatically (41% of total)',
+      '✓ 15% improvement in system immunity via community rules',
+      '⚠ Activity spike detected Tuesday 02/04 (investigation ongoing)',
     ]
   });
 
   const getMonthlyData = () => ({
     kpis: [
-      { label: 'Incidents Traités', value: '3,142', target: '3,000', status: '✓ DÉPASSÉ', color: 'green' },
-      { label: 'Taux Automatisation', value: '68%', target: '60%', status: '✓ ATTEINT', color: 'green' },
-      { label: 'Disponibilité', value: '99.97%', target: '99.9%', status: '✓ EXCELLENT', color: 'green' },
-      { label: 'Faux Positifs Réduits', value: '87%', target: '80%', status: '✓ DÉPASSÉ', color: 'green' },
+      { label: 'Incidents Processed', value: '3,142', target: '3,000', status: '✓ EXCEEDED', color: 'green' },
+      { label: 'Automation Rate', value: '68%', target: '60%', status: '✓ ACHIEVED', color: 'green' },
+      { label: 'Uptime', value: '99.97%', target: '99.9%', status: '✓ EXCELLENT', color: 'green' },
+      { label: 'False Positives Reduced', value: '87%', target: '80%', status: '✓ EXCEEDED', color: 'green' },
     ],
     recommendations: [
-      '1. Maintenir le niveau d\'automatisation actuel (68%)',
-      '2. Déployer 3 nouvelles règles communautaires identifiées',
-      '3. Former équipe SOC sur nouveaux vecteurs d\'attaque détectés',
-      '4. Planifier audit trimestriel de l\'infrastructure',
+      '1. Maintain current automation level (68%)',
+      '2. Deploy 3 new identified community rules',
+      '3. Train SOC team on newly detected attack vectors',
+      '4. Schedule quarterly infrastructure audit',
     ]
   });
 
@@ -76,7 +76,7 @@ export default function ReportModal({ type, stats, onClose }: ReportModalProps) 
           <div>
             <h2 className="text-2xl font-bold text-white">{getTitle()}</h2>
             <p className="text-sm text-slate-400 mt-1">
-              Généré le {new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Generated on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -105,7 +105,7 @@ export default function ReportModal({ type, stats, onClose }: ReportModalProps) 
           {/* KPIs Grid */}
           <div>
             <h3 className="text-lg font-bold text-white mb-4">
-              {type === 'monthly' ? 'Performance Mensuelle' : type === 'weekly' ? 'Analyse Hebdomadaire' : 'Indicateurs Clés'}
+              {type === 'monthly' ? 'Monthly Performance' : type === 'weekly' ? 'Weekly Analysis' : 'Key Indicators'}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {data.kpis.map((kpi, i) => (
@@ -114,7 +114,7 @@ export default function ReportModal({ type, stats, onClose }: ReportModalProps) 
                   <div className="text-2xl font-bold text-white mb-1">{kpi.value}</div>
                   {kpi.status && <div className={`text-xs font-medium text-${kpi.color}-400`}>{kpi.status}</div>}
                   {kpi.trend && <div className={`text-xs font-medium text-${kpi.color}-400`}>{kpi.trend}</div>}
-                  {kpi.target && <div className="text-xs text-slate-500">Objectif: {kpi.target}</div>}
+                  {kpi.target && <div className="text-xs text-slate-500">Target: {kpi.target}</div>}
                 </div>
               ))}
             </div>
@@ -123,7 +123,7 @@ export default function ReportModal({ type, stats, onClose }: ReportModalProps) 
           {/* Summary/Highlights/Recommendations */}
           <div className="bg-slate-800/30 border border-slate-700 rounded-xl p-6">
             <h3 className="text-lg font-bold text-white mb-4">
-              {type === 'monthly' ? 'Recommandations Stratégiques' : type === 'weekly' ? 'Faits Marquants' : 'Résumé Exécutif'}
+              {type === 'monthly' ? 'Strategic Recommendations' : type === 'weekly' ? 'Highlights' : 'Executive Summary'}
             </h3>
             <div className="space-y-3">
               {(data.summary || data.highlights || data.recommendations || []).map((item: string, i: number) => (
@@ -139,7 +139,7 @@ export default function ReportModal({ type, stats, onClose }: ReportModalProps) 
         {/* Footer */}
         <div className="border-t border-slate-800 p-6 bg-slate-900/50">
           <p className="text-xs text-slate-500 text-center">
-            © 2025 Lumensec - Security Operations Center - Document Confidentiel
+            © 2025 Lumensec - Security Operations Center - Confidential Document
           </p>
         </div>
       </div>
