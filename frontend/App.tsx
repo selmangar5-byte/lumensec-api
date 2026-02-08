@@ -25,6 +25,10 @@ export default function App() {
     return <Login onLogin={() => setAuthenticated(true)} />;
   }
 
+  const selectedIncident = selectedIncidentId && stats
+    ? stats.recent_incidents.find(i => i.id.toString() === selectedIncidentId)
+    : null;
+
   return (
     <LanguageProvider>
       <div className="min-h-screen bg-slate-900">
@@ -36,11 +40,11 @@ export default function App() {
         )}
         <Dashboard 
           stats={stats} 
-          onIncidentClick={(id) => setSelectedIncidentId(id)}
+          onSelectIncident={(id) => setSelectedIncidentId(id)}
         />
-        {selectedIncidentId && (
+        {selectedIncident && (
           <IncidentDetail
-            incidentId={selectedIncidentId}
+            incident={selectedIncident}
             onClose={() => setSelectedIncidentId(null)}
           />
         )}

@@ -73,7 +73,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
                       <tr 
                         key={incident.id} 
                         className="hover:bg-emerald-500/[0.03] transition-all group cursor-pointer"
-                        onClick={() => onSelectIncident(incident.id)}
+                        onClick={() => onSelectIncident(incident.id.toString())}
                       >
                         <td className="px-10 py-6">
                           <span className="font-mono text-[11px] text-indigo-400 group-hover:text-emerald-400 transition-colors font-bold">
