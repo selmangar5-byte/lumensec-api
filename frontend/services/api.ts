@@ -31,3 +31,4 @@ export const lumensecApi = {
     // Fonction stub pour l'instant
   }
 };
+// Cache bust Sun Feb  8 01:47:47 AM UTC 2026
