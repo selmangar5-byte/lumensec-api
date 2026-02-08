@@ -14,6 +14,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
+  if (!stats) return <div className="text-white text-center p-10">Loading...</div>;
   const getSeverityLabel = (severity: number) => {
     switch(severity) {
       case 5: return { label: 'CRITICAL', color: 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]' };
