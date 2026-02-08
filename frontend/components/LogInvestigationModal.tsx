@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
 
 interface LogInvestigationModalProps {
   log: any;
@@ -7,38 +6,36 @@ interface LogInvestigationModalProps {
 }
 
 export default function LogInvestigationModal({ log, onClose }: LogInvestigationModalProps) {
-  const { t } = useLanguage();
-  
   const sections = [
     {
       icon: '📅',
-      title: t.timelineComplete,
-      subtitle: t.eventSequence,
-      description: t.timelineDesc
+      title: 'Complete Timeline',
+      subtitle: 'Event Sequence & Causality Chain',
+      description: 'Full reconstruction of the event timeline with precise timestamps, including precursor actions and cascading effects.'
     },
     {
       icon: '📦',
-      title: t.evidencePacks,
-      subtitle: t.forensicArtifacts,
-      description: t.evidenceDesc
+      title: 'Evidence Packs',
+      subtitle: 'Forensic Artifacts & Digital Traces',
+      description: 'Comprehensive collection of logs, network captures, file hashes, and system snapshots for deep forensic analysis.'
     },
     {
       icon: '🌍',
-      title: t.sourceAttribution,
-      subtitle: t.userAgent,
-      description: t.sourceDesc
+      title: 'Source Attribution',
+      subtitle: 'Geolocation, User Agent & Session Context',
+      description: 'Detailed analysis of the origin: IP geolocation, device fingerprint, browser metadata, and session correlation.'
     },
     {
       icon: '⚙️',
-      title: t.stacktrace,
-      subtitle: t.codeExecution,
-      description: t.stacktraceDesc
+      title: 'Technical Stacktrace',
+      subtitle: 'Code Execution Path & System Calls',
+      description: 'Low-level system call trace, application stack dump, and database query logs for root cause analysis.'
     },
     {
       icon: '✅',
-      title: t.remediationPlaybook,
-      subtitle: t.automatedResponse,
-      description: t.remediationDesc
+      title: 'Remediation Playbook',
+      subtitle: 'Automated Response & Mitigation Steps',
+      description: 'Pre-configured response actions, incident containment procedures, and recommended security hardening measures.'
     }
   ];
 
@@ -54,11 +51,11 @@ export default function LogInvestigationModal({ log, onClose }: LogInvestigation
                   <span className="text-2xl">🔍</span>
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">{t.detailedInvestigation}</h2>
-                  <p className="text-sm text-orange-400 font-mono">{t.event} #{log.id} • {log.timestamp}</p>
+                  <h2 className="text-2xl font-bold text-white">Detailed Investigation</h2>
+                  <p className="text-sm text-orange-400 font-mono">Event #{log.id} • {log.timestamp}</p>
                 </div>
               </div>
-              <p className="text-slate-400 text-sm italic">{t.completeFile}</p>
+              <p className="text-slate-400 text-sm italic">Complete forensic file available for Enterprise tier</p>
             </div>
             <button
               onClick={onClose}
@@ -87,7 +84,7 @@ export default function LogInvestigationModal({ log, onClose }: LogInvestigation
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                       </svg>
-                      <span>{t.dataAvailable}</span>
+                      <span>Full data available with Enterprise license</span>
                     </div>
                   </div>
                 </div>
@@ -100,13 +97,13 @@ export default function LogInvestigationModal({ log, onClose }: LogInvestigation
         <div className="border-t border-orange-500/30 p-6 bg-slate-900/50">
           <div className="flex items-center justify-between">
             <p className="text-xs text-slate-500">
-              © 2025 Lumensec - {t.forensicInvestigation}
+              © 2025 Lumensec - Advanced Forensic Investigation Platform
             </p>
             <div className="flex items-center gap-2 text-orange-400 text-sm font-medium">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
-              <span>{t.availableEnterprise}</span>
+              <span>Available with Enterprise tier</span>
             </div>
           </div>
         </div>
