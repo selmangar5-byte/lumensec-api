@@ -7,22 +7,28 @@ import Login from './components/Login';
 import IncidentDetail from './components/IncidentDetail';
 import { LanguageProvider } from './contexts/LanguageContext';
 
+interface User {
+  username: string;
+  role: string;
+  displayName: string;
+}
+
 export default function App() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [authenticated, setAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (authenticated) {
+    if (user) {
       lumensecApi.getStats()
         .then(setStats)
         .catch(err => setError(err.message));
     }
-  }, [authenticated]);
+  }, [user]);
 
-  if (!authenticated) {
-    return <Login onLogin={() => setAuthenticated(true)} />;
+  if (!user) {
+    return <Login onLogin={(userData) => setUser(userData)} />;
   }
 
   const selectedIncident = selectedIncidentId && stats
@@ -32,7 +38,7 @@ export default function App() {
   return (
     <LanguageProvider>
       <div className="min-h-screen bg-slate-900">
-        <Header />
+        <Header user={user} />
         {error && (
           <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 mx-4 mt-4 rounded">
             {error}

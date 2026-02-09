@@ -1,8 +1,32 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
-export default function Header() {
+interface User {
+  username: string;
+  role: string;
+  displayName: string;
+}
+
+interface HeaderProps {
+  user: User;
+}
+
+export default function Header({ user }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage();
+
+  const getRoleBadgeColor = (role: string) => {
+    if (role === 'Admin') return 'bg-red-500/10 text-red-400 border-red-500/20';
+    if (role === 'Analyst') return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+    return 'bg-gray-500/10 text-gray-400 border-gray-500/20';
+  };
+
+  const getUserInitials = (displayName: string) => {
+    const parts = displayName.split('-');
+    if (parts.length > 1) {
+      return parts[0][0] + parts[1][0];
+    }
+    return displayName.substring(0, 2).toUpperCase();
+  };
 
   return (
     <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
@@ -59,11 +83,13 @@ export default function Header() {
             {/* User Menu */}
             <div className="flex items-center space-x-3 pl-4 border-l border-slate-800">
               <div className="text-right">
-                <p className="text-xs font-bold text-white">Nawal</p>
-                <p className="text-[9px] text-slate-500 font-mono">SOC ADMIN</p>
+                <p className="text-xs font-bold text-white">{user.displayName}</p>
+                <div className={`inline-block px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${getRoleBadgeColor(user.role)}`}>
+                  {user.role}
+                </div>
               </div>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                <span className="text-sm font-bold text-white">N</span>
+                <span className="text-sm font-bold text-white">{getUserInitials(user.displayName)}</span>
               </div>
             </div>
           </nav>
