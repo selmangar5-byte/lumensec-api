@@ -49,18 +49,28 @@ const IncidentDetail: React.FC<IncidentDetailProps> = ({ incident, onClose }) =>
     return analysts[severity as keyof typeof analysts] || 'Unassigned';
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return 'N/A';
+    
     try {
+      // Handle ISO format with timezone
       const date = new Date(dateString);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return dateString; // Return original string if can't parse
+      }
+      
       return date.toLocaleString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'America/New_York' // Eastern Time for consistency
       });
-    } catch {
-      return dateString;
+    } catch (error) {
+      return dateString || 'N/A';
     }
   };
 

@@ -50,7 +50,7 @@ export default function CommunityRulesMarket() {
             </div>
             <div>
               <h3 className="text-sm font-bold text-white uppercase tracking-wider">Community Rules Market</h3>
-              <p className="text-[10px] text-slate-500 font-mono">{installedCount}/{rules.length} règles installées</p>
+              <p className="text-[10px] text-slate-500 font-mono">{installedCount}/{rules.length} installed rules</p>
             </div>
           </div>
           <span className="text-[10px] text-purple-400 font-mono uppercase tracking-widest px-3 py-1 bg-purple-500/10 border border-purple-500/20 rounded">
@@ -64,7 +64,7 @@ export default function CommunityRulesMarket() {
         {rules.map((rule) => (
           <div
             key={rule.id}
-            className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 hover:border-purple-500/30 transition-all"
+            className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-2">
@@ -99,7 +99,7 @@ export default function CommunityRulesMarket() {
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Installé</span>
+                  <span>Installed</span>
                 </div>
               ) : (
                 <button
@@ -110,14 +110,14 @@ export default function CommunityRulesMarket() {
                   {installing === rule.id ? (
                     <>
                       <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
-                      <span>Installation...</span>
+                      <span>Installing...</span>
                     </>
                   ) : (
                     <>
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
-                      <span>Installer</span>
+                      <span>Install</span>
                     </>
                   )}
                 </button>
@@ -130,7 +130,7 @@ export default function CommunityRulesMarket() {
       {/* Footer */}
       <div className="p-4 bg-slate-900/50 border-t border-slate-800">
         <p className="text-[10px] text-slate-500 text-center font-mono">
-          Nawal, vos données sont protégées et rendues L'intégralité SMA-256 est vérifiée sur chaque pack de preuves.
+          Your data is protected with SHA-256 integrity verification on every evidence pack.
         </p>
       </div>
     </div>
