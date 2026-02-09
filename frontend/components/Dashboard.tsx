@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Incident, DashboardStats } from '../types';
 import KPISection from './KPISection';
 import CyberMap from './CyberMap';
@@ -7,6 +7,8 @@ import SystemHealth from './SystemHealth';
 import ReportCenter from './ReportCenter';
 import AuditLogExplorer from './AuditLogExplorer';
 import CommunityRulesMarket from './CommunityRulesMarket';
+import Loi25Modal from './Loi25Modal';
+import SystemHealthModal from './SystemHealthModal';
 
 interface DashboardProps {
   stats: DashboardStats;
@@ -14,7 +16,11 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
+  const [showLoi25Modal, setShowLoi25Modal] = useState(false);
+  const [showSystemHealthModal, setShowSystemHealthModal] = useState(false);
+
   if (!stats) return <div className="text-white text-center p-10">Loading...</div>;
+  
   const getSeverityLabel = (severity: number) => {
     switch(severity) {
       case 5: return { label: 'CRITICAL', color: 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]' };
@@ -108,12 +114,18 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
         </div>
 
         <div className="lg:col-span-4 space-y-8">
-          {/* Preuve & ROI (Sexy Upgrade) */}
-          <div className="bg-gradient-to-br from-indigo-900/40 to-slate-900 border border-indigo-500/30 p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
+          {/* Loi 25 Compliance - Clickable */}
+          <div 
+            onClick={() => setShowLoi25Modal(true)}
+            className="bg-gradient-to-br from-indigo-900/40 to-slate-900 border border-indigo-500/30 p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group cursor-pointer hover:border-indigo-400/50 hover:shadow-indigo-500/20 hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <svg className="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
             </div>
-            <h3 className="text-white font-black text-xs uppercase tracking-widest italic mb-4">Loi 25 Compliance Score</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-black text-xs uppercase tracking-widest italic">Loi 25 Compliance Score</h3>
+              <span className="text-indigo-400 text-xs">Click for details →</span>
+            </div>
             <div className="flex items-center space-x-4 mb-6">
                <span className="text-4xl font-black text-emerald-400 italic">98%</span>
                <div className="flex-grow h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -121,16 +133,25 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
                </div>
             </div>
             <p className="text-[9px] text-slate-400 font-medium leading-relaxed italic">
-              Nawal, vos données sont protégées et isolées. L'intégrité SHA-256 est vérifiée sur chaque pack de preuves.
+              Your data is protected and isolated. SHA-256 integrity verified on every evidence pack.
             </p>
           </div>
 
           <ReportCenter />
-          <SystemHealth />
+          
+          {/* System Health - Clickable wrapper */}
+          <div onClick={() => setShowSystemHealthModal(true)} className="cursor-pointer">
+            <SystemHealth />
+          </div>
+          
           <CommunityRulesMarket />
           <CyberMap />
         </div>
       </div>
+
+      {/* Modals */}
+      {showLoi25Modal && <Loi25Modal onClose={() => setShowLoi25Modal(false)} />}
+      {showSystemHealthModal && <SystemHealthModal onClose={() => setShowSystemHealthModal(false)} />}
     </div>
   );
 };
