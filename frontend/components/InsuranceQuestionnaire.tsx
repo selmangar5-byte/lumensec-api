@@ -148,7 +148,10 @@ export default function InsuranceQuestionnaire() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ answers })
+        body: JSON.stringify({ 
+  answers,
+  tenant_id: localStorage.getItem('tenant_id')
+})
       });
 
       const data = await response.json();
