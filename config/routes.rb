@@ -14,5 +14,8 @@ Rails.application.routes.draw do
       post 'webhooks/receive', to: 'webhooks#receive'
       post "admin/seed", to: "admin#seed_incidents"
     end
+    
+    # Insurance Assessment
+    post 'insurance_assessments', to: 'insurance_assessments#create'
   end
 end
