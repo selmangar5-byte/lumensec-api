@@ -115,6 +115,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://lumensec-api.onrender.c
 
 export default function InsuranceQuestionnaire({ user }: { user: any }) {
   const [currentSection, setCurrentSection] = useState(0);
+  console.log("USER OBJECT:", user);
   const [answers, setAnswers] = useState<Partial<QuestionnaireAnswers>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<AssessmentResult | null>(null);
