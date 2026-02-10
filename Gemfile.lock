@@ -141,7 +141,7 @@ GEM
       racc (~> 1.4)
     parallel (1.27.0)
     parser (3.3.10.1)
-      ast (~> 2.4.1)
+      ast (~> 2.5.23)
       racc
     pdf-core (0.10.0)
     pg (1.6.3-x86_64-linux)
@@ -284,5 +284,5 @@ RUBY VERSION
    ruby 3.2.0p0
 
 BUNDLED WITH
-   2.4.1
+   2.5.23
 curl -s https://lumensec-api.onrender.com/dashboard/stats -H "X-Tenant-ID: 1" | jq '.total_incidents'
