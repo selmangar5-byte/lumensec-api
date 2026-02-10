@@ -19,15 +19,15 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
-  const [currentView, setCurrentView] = useState<'dashboard' | 'insurance'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'insurance'>('insurance');
 
   useEffect(() => {
-    if (user) {
+    if (user && currentView === 'dashboard') {
       lumensecApi.getStats()
         .then(setStats)
         .catch(err => setError(err.message));
     }
-  }, [user]);
+  }, [user, currentView]);
 
   if (!user) {
     return <Login onLogin={(userData) => setUser(userData)} />;
@@ -42,7 +42,6 @@ export default function App() {
       <div className="min-h-screen bg-slate-900">
         <Header user={user} />
         
-        {/* Navigation */}
         <div className="px-4 py-3 border-b border-slate-700">
           <button
             onClick={() => setCurrentView('dashboard')}
