@@ -6,6 +6,7 @@ import Header from './components/Header';
 import Login from './components/Login';
 import IncidentDetail from './components/IncidentDetail';
 import InsuranceQuestionnaire from './components/InsuranceQuestionnaire';
+import InsuranceDashboard from './components/InsuranceDashboard';
 import { LanguageProvider } from './contexts/LanguageContext';
 
 interface User {
@@ -19,7 +20,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
-  const [currentView, setCurrentView] = useState<'dashboard' | 'insurance'>('insurance');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'insurance' | 'insurance-dashboard'>('insurance-dashboard');
 
   useEffect(() => {
     if (user && currentView === 'dashboard') {
@@ -47,13 +48,19 @@ export default function App() {
             onClick={() => setCurrentView('dashboard')}
             className={`px-4 py-2 mr-2 rounded ${currentView === 'dashboard' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-gray-300'}`}
           >
-            Dashboard
+            SOC Dashboard
+          </button>
+          <button
+            onClick={() => setCurrentView('insurance-dashboard')}
+            className={`px-4 py-2 mr-2 rounded ${currentView === 'insurance-dashboard' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-gray-300'}`}
+          >
+            Insurance Dashboard
           </button>
           <button
             onClick={() => setCurrentView('insurance')}
             className={`px-4 py-2 rounded ${currentView === 'insurance' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-gray-300'}`}
           >
-            Insurance Assessment
+            New Assessment
           </button>
         </div>
 
@@ -68,6 +75,8 @@ export default function App() {
             stats={stats} 
             onSelectIncident={(id) => setSelectedIncidentId(id)}
           />
+        ) : currentView === 'insurance-dashboard' ? (
+          <InsuranceDashboard />
         ) : (
           <InsuranceQuestionnaire />
         )}

@@ -16,6 +16,6 @@ Rails.application.routes.draw do
     end
     
     # Insurance Assessment
-    post 'insurance_assessments', to: 'insurance_assessments#create'
+    resources :insurance_assessments, only: [:create, :index]
   end
 end
