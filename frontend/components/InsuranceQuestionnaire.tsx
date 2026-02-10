@@ -113,7 +113,7 @@ const SECTIONS = [
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lumensec-api.onrender.com';
 
-export default function InsuranceQuestionnaire() {
+export default function InsuranceQuestionnaire({ user }: { user: any }) {
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState<Partial<QuestionnaireAnswers>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -150,7 +150,7 @@ export default function InsuranceQuestionnaire() {
         },
         body: JSON.stringify({ 
   answers,
-  tenant_id: localStorage.getItem('tenant_id')
+  tenant_id: user.tenant_id
 })
       });
 

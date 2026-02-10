@@ -78,7 +78,7 @@ export default function App() {
         ) : currentView === 'insurance-dashboard' ? (
           <InsuranceDashboard />
         ) : (
-          <InsuranceQuestionnaire />
+          <InsuranceQuestionnaire user={user} />
         )}
 
         {selectedIncident && (
