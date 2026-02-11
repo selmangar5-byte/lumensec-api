@@ -2,7 +2,7 @@ module Api
   class InsuranceAssessmentsController < ApplicationController
     def create
       answers = params[:answers]
-      tenant_id = request.headers['X-Tenant-ID'] || '00000000-0000-0000-0000-000000000001'
+      tenant_id = params[:tenant_id] || '00000000-0000-0000-0000-000000000001'
       
       result = InsuranceScoringEngine.calculate(answers)
       
