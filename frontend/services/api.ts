@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://lumensec-api.onrender.com";
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "https://symmetrical-system-wrpwxpjr57qx29wjr-10000.app.github.dev" : "https://lumensec-api.onrender.com");
 
 const getHeaders = () => ({
   "Content-Type": "application/json",
@@ -11,7 +11,8 @@ export const lumensecApi = {
       headers: getHeaders() 
     });
     if (!response.ok) throw new Error("Backend non joignable");
-    return response.json();
+    const data = await response.json();
+    return data.stats || data;
   },
   
   getIncident: async (id: string) => {
@@ -25,10 +26,8 @@ export const lumensecApi = {
   getAuditLogs: async () => {
     return [];
   },
-
+  
   downloadActivityReport: (period: string) => {
     console.log(`Downloading ${period} report...`);
-    // Fonction stub pour l'instant
   }
 };
-// Cache bust Sun Feb  8 01:47:47 AM UTC 2026

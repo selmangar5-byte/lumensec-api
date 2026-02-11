@@ -1,6 +1,7 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  config.hosts << "symmetrical-system-wrpwxpjr57qx29wjr-10000.app.github.dev"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time
@@ -72,7 +73,5 @@ Rails.application.configure do
   config.hosts << ".github.dev"
   config.hosts << "symmetrical-system-wrpwxpjr57qx29wjr-3000.app.github.dev"
 end
-
-
 
 
