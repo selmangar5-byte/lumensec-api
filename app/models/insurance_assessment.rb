@@ -1,3 +1,3 @@
 class InsuranceAssessment < ApplicationRecord
-  belongs_to :tenant
+  belongs_to :tenant, optional: true
 end
