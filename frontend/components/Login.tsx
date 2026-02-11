@@ -19,6 +19,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       description: 'Full system access',
       requiresPassword: true,
       password: 'FATMA'
+      tenant_id: "d99e4b24-8a5c-4e3d-9f1a-2c3b4d5e6f7a",
     },
     { 
       username: 'analyst', 
@@ -27,6 +28,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       description: 'Incident management',
       requiresPassword: false
     },
+      tenant_id: "d99e4b24-8a5c-4e3d-9f1a-2c3b4d5e6f7a",
     { 
       username: 'guest', 
       role: 'Guest', 
@@ -34,6 +36,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       description: 'Read-only access',
       requiresPassword: false
     }
+      tenant_id: "d99e4b24-8a5c-4e3d-9f1a-2c3b4d5e6f7a",
   ];
 
   useEffect(() => {
