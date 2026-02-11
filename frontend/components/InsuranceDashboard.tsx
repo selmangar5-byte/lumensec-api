@@ -15,9 +15,13 @@ interface Assessment {
   };
 }
 
+interface InsuranceDashboardProps {
+  user: any;
+}
+
 const API_URL = import.meta.env.VITE_API_URL || 'https://lumensec-api.onrender.com';
 
-export default function InsuranceDashboard() {
+export default function InsuranceDashboard({ user }: InsuranceDashboardProps) {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,11 +31,7 @@ export default function InsuranceDashboard() {
 
   const fetchAssessments = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/insurance_assessments`, {
-        headers: {
-          'X-Tenant-ID': '00000000-0000-0000-0000-000000000001'
-        }
-      });
+      const response = await fetch(`${API_URL}/api/insurance_assessments?tenant_id=${user.tenant_id}`);
       const data = await response.json();
       setAssessments(data.assessments || []);
     } catch (error) {

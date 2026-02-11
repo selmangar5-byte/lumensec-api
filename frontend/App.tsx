@@ -76,7 +76,7 @@ export default function App() {
             onSelectIncident={(id) => setSelectedIncidentId(id)}
           />
         ) : currentView === 'insurance-dashboard' ? (
-          <InsuranceDashboard />
+          <InsuranceDashboard user={user} />
         ) : (
           <InsuranceQuestionnaire user={user} />
         )}
