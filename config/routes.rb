@@ -2,9 +2,10 @@
 Rails.application.routes.draw do
   root to: proc { [200, { 'Content-Type' => 'application/json' }, [{ status: 'Lumensec SOC API Online', version: '2.8.0' }.to_json]] }
   
+  get 'dashboard/stats', to: 'dashboard#stats'
+  
   namespace :api do
     namespace :v1 do
-      get 'dashboard/stats', to: 'dashboard#stats'
       resources :analysis_results, only: [:index, :show, :update] do
         member do
           get :evidence_pack
