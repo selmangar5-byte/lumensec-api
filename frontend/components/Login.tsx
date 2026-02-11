@@ -1,3 +1,4 @@
+cat > frontend/components/Login.tsx << 'EOF'
 import React, { useState, useEffect } from 'react';
 
 interface LoginProps {
@@ -18,25 +19,25 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       displayName: 'Lumensec-Admin',
       description: 'Full system access',
       requiresPassword: true,
-      password: 'FATMA'
-      tenant_id: "d99e4b24-8a5c-4e3d-9f1a-2c3b4d5e6f7a",
+      password: 'FATMA',
+      tenant_id: "d99e4b24-8a5c-4e3d-9f1a-2c3b4d5e6f7a"
     },
     { 
       username: 'analyst', 
       role: 'Analyst', 
       displayName: 'SOC-Analyst',
       description: 'Incident management',
-      requiresPassword: false
+      requiresPassword: false,
+      tenant_id: "d99e4b24-8a5c-4e3d-9f1a-2c3b4d5e6f7a"
     },
-      tenant_id: "d99e4b24-8a5c-4e3d-9f1a-2c3b4d5e6f7a",
     { 
       username: 'guest', 
       role: 'Guest', 
       displayName: 'Guest-Access',
       description: 'Read-only access',
-      requiresPassword: false
+      requiresPassword: false,
+      tenant_id: "d99e4b24-8a5c-4e3d-9f1a-2c3b4d5e6f7a"
     }
-      tenant_id: "d99e4b24-8a5c-4e3d-9f1a-2c3b4d5e6f7a",
   ];
 
   useEffect(() => {
@@ -50,7 +51,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     const user = users.find(u => u.username === selectedUser);
     if (!user) return;
 
-    // If user requires password, show password input first
     if (user.requiresPassword && !showPasswordInput) {
       setShowPasswordInput(true);
       return;
@@ -60,7 +60,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     setError('');
 
     setTimeout(() => {
-      // Check password for admin
       if (user.requiresPassword) {
         if (passcode === user.password) {
           onLogin(user);
@@ -70,7 +69,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           setPasscode('');
         }
       } else {
-        // No password required, login directly
         onLogin(user);
       }
     }, 800);
@@ -119,7 +117,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {!showPasswordInput ? (
-            // User selection
             <div className="space-y-3">
               {users.map((user) => (
                 <label
@@ -162,7 +159,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               ))}
             </div>
           ) : (
-            // Password input for Admin
             <div className="relative">
               <input 
                 type="password"
@@ -241,3 +237,4 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 };
 
 export default Login;
+EOF
