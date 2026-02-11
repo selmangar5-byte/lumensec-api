@@ -20,7 +20,7 @@ module Api
     end
     
     def index
-      tenant_id = request.headers['X-Tenant-ID'] || '00000000-0000-0000-0000-000000000001'
+      tenant_id = params[:tenant_id] || request.headers['X-Tenant-ID'] || '00000000-0000-0000-0000-000000000001'
       
       assessments = InsuranceAssessment
         .where(tenant_id: tenant_id)
