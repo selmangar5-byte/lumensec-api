@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_10_181744) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_12_231226) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -67,6 +67,37 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_10_181744) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_insurance_assessments_on_tenant_id"
+  end
+
+  create_table "m365_alerts", force: :cascade do |t|
+    t.string "tenant_id"
+    t.string "alert_id"
+    t.string "title"
+    t.text "description"
+    t.integer "severity", default: 0
+    t.integer "status", default: 0
+    t.string "category"
+    t.string "user_email"
+    t.string "ip_address"
+    t.datetime "detected_at"
+    t.jsonb "raw_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["detected_at"], name: "index_m365_alerts_on_detected_at"
+    t.index ["tenant_id", "alert_id"], name: "index_m365_alerts_on_tenant_id_and_alert_id", unique: true
+  end
+
+  create_table "m365_credentials", force: :cascade do |t|
+    t.string "tenant_id", null: false
+    t.string "client_id", null: false
+    t.string "client_secret", null: false
+    t.string "m365_tenant_id", null: false
+    t.boolean "active", default: false
+    t.datetime "last_sync_at"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_m365_credentials_on_tenant_id", unique: true
   end
 
   add_foreign_key "evidence_packs", "analysis_results"

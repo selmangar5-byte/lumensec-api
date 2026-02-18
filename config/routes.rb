@@ -1,22 +1,14 @@
-# frozen_string_literal: true
 Rails.application.routes.draw do
-  root to: proc { [200, { 'Content-Type' => 'application/json' }, [{ status: 'Lumensec SOC API Online', version: '2.8.0' }.to_json]] }
-  
-  get 'dashboard/stats', to: 'dashboard#stats'
-  
-  namespace :api do
-    namespace :v1 do
-      resources :analysis_results, only: [:index, :show, :update] do
-        member do
-          get :evidence_pack
-          get :export_pdf
-        end
-      end
-      post 'webhooks/receive', to: 'webhooks#receive'
-      post "admin/seed", to: "admin#seed_incidents"
-    end
-    
-    # Insurance Assessment
-    resources :insurance_assessments, only: [:create, :index]
-  end
+  # Health check
+  get '/health', to: 'application#health'
+
+  # Dashboard
+  get '/dashboard/stats', to: 'dashboard#stats'
+
+  # M365
+  get '/m365/alerts', to: 'm365#alerts'
+  get '/m365/credentials', to: 'm365#credentials'
+
+  # Analyse IA
+  post '/alerts/:id/analyze', to: 'alerts#analyze'
 end

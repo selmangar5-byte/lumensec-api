@@ -1,5 +1,5 @@
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ext/nokogiri
-/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260114-16013-hx9oi5.rb extconf.rb
+/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260216-26000-gux5tx.rb extconf.rb
 checking for whether -std=c99 is accepted as CFLAGS... yes
 checking for whether -Wno-declaration-after-statement is accepted as CFLAGS... yes
 checking for whether -O2 is accepted as CFLAGS... yes
@@ -135,5 +135,5 @@ Cleaning files only used during build.
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ext/nokogiri
 make DESTDIR\= install
-/usr/bin/install -c -m 0755 nokogiri.so ./.gem.20260114-16013-27fbnl/nokogiri
+/usr/bin/install -c -m 0755 nokogiri.so ./.gem.20260216-26000-oznofe/nokogiri
 installing nokogiri libraries

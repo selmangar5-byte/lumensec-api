@@ -1,5 +1,5 @@
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/io-console-0.8.2/ext/io/console
-/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260114-16013-tk9mlp.rb extconf.rb
+/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260216-26000-oeii8r.rb extconf.rb
 checking for rb_syserr_fail_str(0, Qnil)... yes
 checking for rb_interned_str_cstr()... yes
 checking for rb_io_path() in ruby/io.h... no
@@ -25,4 +25,4 @@ linking shared-object io/console.so
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/io-console-0.8.2/ext/io/console
 make DESTDIR\= install
-/usr/bin/install -c -m 0755 console.so ./.gem.20260114-16013-2m5e5p/io
+/usr/bin/install -c -m 0755 console.so ./.gem.20260216-26000-vz27mj/io

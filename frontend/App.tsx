@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { lumensecApi } from './services/api';
+import { lumensecAPI } from './services/api';
 import { DashboardStats } from './types';
 import Dashboard from './components/Dashboard';
 import Header from './components/Header';
@@ -20,11 +20,11 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
-  const [currentView, setCurrentView] = useState<'dashboard' | 'insurance' | 'insurance-dashboard'>('insurance-dashboard');
+ const [currentView, setCurrentView] = useState<'dashboard' | 'insurance' | 'insurance-dashboard'>('dashboard');
 
   useEffect(() => {
     if (user && currentView === 'dashboard') {
-      lumensecApi.getStats()
+      lumensecAPI.getDashboardStats()
         .then(setStats)
         .catch(err => setError(err.message));
     }

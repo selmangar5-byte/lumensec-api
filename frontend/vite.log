@@ -1,0 +1,15 @@
+nohup: ignoring input
+
+> lumensec-frontend@1.0.0 dev
+> vite
+
+
+  VITE v5.4.21  ready in 203 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://10.0.13.241:5173/
+12:34:04 AM [vite] hmr update /App.tsx, /components/M365Alerts.tsx, /components/M365Config.tsx
+12:49:18 AM [vite] hmr update /components/M365Alerts.tsx
+12:52:45 AM [vite] hmr update /components/M365Alerts.tsx
+12:56:41 AM [vite] hmr update /components/M365Alerts.tsx
+12:59:19 AM [vite] hmr update /components/M365Alerts.tsx

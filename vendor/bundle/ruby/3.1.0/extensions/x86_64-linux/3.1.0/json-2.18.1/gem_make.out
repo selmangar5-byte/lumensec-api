@@ -1,5 +1,5 @@
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/json-2.18.1/ext/json/ext/parser
-/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260206-9144-oi6x30.rb extconf.rb
+/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260216-26000-9qqn4d.rb extconf.rb
 checking for rb_enc_interned_str() in ruby/encoding.h... yes
 checking for rb_str_to_interned_str() in ruby.h... yes
 checking for rb_hash_new_capa() in ruby.h... no
@@ -19,4 +19,4 @@ linking shared-object json/ext/parser.so
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/json-2.18.1/ext/json/ext/parser
 make DESTDIR\= install
-/usr/bin/install -c -m 0755 parser.so ./.gem.20260206-9144-mogaqi/json/ext
+/usr/bin/install -c -m 0755 parser.so ./.gem.20260216-26000-yx6g5k/json/ext

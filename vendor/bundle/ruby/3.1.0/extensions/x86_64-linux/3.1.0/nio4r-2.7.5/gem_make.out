@@ -1,5 +1,5 @@
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/nio4r-2.7.5/ext/nio4r
-/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260114-16013-cj3dek.rb extconf.rb
+/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260216-26000-tcga9y.rb extconf.rb
 checking for unistd.h... yes
 checking for rb_io_descriptor()... yes
 checking for linux/aio_abi.h... yes
@@ -47,4 +47,4 @@ linking shared-object nio4r_ext.so
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/nio4r-2.7.5/ext/nio4r
 make DESTDIR\= install
-/usr/bin/install -c -m 0755 nio4r_ext.so ./.gem.20260114-16013-txjeu0
+/usr/bin/install -c -m 0755 nio4r_ext.so ./.gem.20260216-26000-qchy7v

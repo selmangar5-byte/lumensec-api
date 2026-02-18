@@ -9,6 +9,8 @@ import AuditLogExplorer from './AuditLogExplorer';
 import CommunityRulesMarket from './CommunityRulesMarket';
 import Loi25Modal from './Loi25Modal';
 import SystemHealthModal from './SystemHealthModal';
+import M365Alerts from './M365Alerts';
+import M365Config from './M365Config';
 
 interface DashboardProps {
   stats: DashboardStats;
@@ -39,7 +41,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
     }
   };
 
-  const threatLevel = Math.min(100, (stats.total_incidents * 15) + (stats.by_severity["5"] || 0 * 20));
+  const threatLevel = Math.min(100, (stats.total_incidents * 15) + ((stats.by_severity?.["5"] || 0) * 20));
 
   return (
     <div className="space-y-12 animate-in fade-in zoom-in-95 duration-700">
@@ -72,7 +74,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/30">
-                  {stats.recent_incidents.map((incident) => {
+                  {(stats?.recent_incidents || []).map((incident) => {
                     const sev = getSeverityLabel(incident.severity);
                     const statusUI = getStatusDisplay(incident.status);
                     return (
@@ -109,6 +111,8 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
             </div>
           </div>
           
+          <M365Config />
+          <M365Alerts />
           <AuditLogExplorer />
           <SOCTerminal />
         </div>
@@ -124,7 +128,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
             </div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-white font-black text-xs uppercase tracking-widest italic">Loi 25 Compliance Score</h3>
-              <span className="text-indigo-400 text-xs">Click for details →</span>
+              <span className="text-indigo-400 text-xs">Click for details</span>
             </div>
             <div className="flex items-center space-x-4 mb-6">
                <span className="text-4xl font-black text-emerald-400 italic">98%</span>

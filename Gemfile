@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.2.0"
+ruby ">= 3.1.0"
 
 # Rails
 gem "rails", "~> 7.2.3"
@@ -42,3 +42,5 @@ group :development, :test do
   # Ruby / Rails style
   gem "rubocop-rails-omakase", require: false
 end
+gem 'grover'
+gem 'gemini-ai', '~> 4.2'

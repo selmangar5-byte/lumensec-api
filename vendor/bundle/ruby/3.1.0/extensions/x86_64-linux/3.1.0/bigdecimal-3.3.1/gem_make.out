@@ -1,5 +1,5 @@
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/bigdecimal-3.3.1/ext/bigdecimal
-/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260125-1119-31m7jl.rb extconf.rb
+/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260216-26000-jv0rgo.rb extconf.rb
 checking for __builtin_clz()... yes
 checking for __builtin_clzl()... yes
 checking for __builtin_clzll()... yes
@@ -32,4 +32,4 @@ linking shared-object bigdecimal.so
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/bigdecimal-3.3.1/ext/bigdecimal
 make DESTDIR\= install
-/usr/bin/install -c -m 0755 bigdecimal.so ./.gem.20260125-1119-fx9sj2
+/usr/bin/install -c -m 0755 bigdecimal.so ./.gem.20260216-26000-w30in6

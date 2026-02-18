@@ -1,5 +1,5 @@
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/bcrypt-3.1.21/ext/mri
-/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260123-1333-f5cj0n.rb extconf.rb
+/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260216-26000-o3u6yz.rb extconf.rb
 creating Makefile
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/bcrypt-3.1.21/ext/mri
@@ -19,4 +19,4 @@ linking shared-object bcrypt_ext.so
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/bcrypt-3.1.21/ext/mri
 make DESTDIR\= install
-/usr/bin/install -c -m 0755 bcrypt_ext.so ./.gem.20260123-1333-todnap
+/usr/bin/install -c -m 0755 bcrypt_ext.so ./.gem.20260216-26000-s4rtzt

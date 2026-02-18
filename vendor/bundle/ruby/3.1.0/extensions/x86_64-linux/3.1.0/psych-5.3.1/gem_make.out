@@ -1,5 +1,5 @@
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/psych-5.3.1/ext/psych
-/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260114-16013-ue354a.rb extconf.rb
+/usr/bin/ruby3.1 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20260216-26000-j0itnt.rb extconf.rb
 creating Makefile
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/psych-5.3.1/ext/psych
@@ -19,4 +19,4 @@ linking shared-object psych.so
 
 current directory: /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/psych-5.3.1/ext/psych
 make DESTDIR\= install
-/usr/bin/install -c -m 0755 psych.so ./.gem.20260114-16013-8nn0u8
+/usr/bin/install -c -m 0755 psych.so ./.gem.20260216-26000-cawkt4

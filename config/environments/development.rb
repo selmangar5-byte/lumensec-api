@@ -1,7 +1,16 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  config.hosts << "symmetrical-system-wrpwxpjr57qx29wjr-10000.app.github.dev"
+  # AUTORISE TOUS LES HOSTS (nécessaire pour GitHub Codespaces + Vite proxy)
+  config.hosts.clear
+  
+  # Si tu veux être restrictif plus tard, remplace la ligne ci-dessus par :
+  # config.hosts = ["localhost", "127.0.0.1", /.*\.github\.dev/]
+
+  # OPTIONNEL : Décommente la ligne suivante si tu as encore des erreurs 403 
+  # après avoir redémarré les serveurs (Étape 4)
+  # config.middleware.delete Rack::Protection::HttpOrigin
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time
@@ -70,8 +79,4 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
-  config.hosts << ".github.dev"
-  config.hosts << "symmetrical-system-wrpwxpjr57qx29wjr-3000.app.github.dev"
 end
-
-

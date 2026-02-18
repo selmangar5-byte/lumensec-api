@@ -92,7 +92,7 @@ checked program was:
 /* end */
 
 LD_LIBRARY_PATH=.:/usr/lib/x86_64-linux-gnu "x86_64-linux-gnu-gcc -o conftest -I/usr/include/x86_64-linux-gnu/ruby-3.1.0 -I/usr/include/ruby-3.1.0/ruby/backward -I/usr/include/ruby-3.1.0 -I. -Wdate-time -D_FORTIFY_SOURCE=2   -g -O2 -ffile-prefix-map=BUILDDIR=. -fstack-protector-strong -Wformat -Werror=format-security -fPIC conftest.c  -L. -L/usr/lib/x86_64-linux-gnu -L. -Wl,-z,relro -Wl,-z,now -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -lruby-3.1  -lm  -lc"
-/usr/bin/ld: /tmp/cc9SW4GS.o: in function `t':
+/usr/bin/ld: /tmp/cc4NLfcX.o: in function `t':
 /workspaces/lumensec-api/vendor/bundle/ruby/3.1.0/gems/msgpack-1.8.0/ext/msgpack/conftest.c:17: undefined reference to `rb_hash_new_capa'
 collect2: error: ld returned 1 exit status
 checked program was:

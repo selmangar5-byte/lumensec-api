@@ -1,0 +1,40 @@
+cat > config/routes.rb << 'EOF'
+# frozen_string_literal: true
+
+Rails.application.routes.draw do
+  root to: proc { [200, { 'Content-Type' => 'application/json' }, [{ status: 'Lumensec SOC API Online', version: '2.8.0' }.to_json]] }
+  
+  get 'dashboard/stats', to: 'dashboard#stats'
+  
+  namespace :api do
+    namespace :v1 do
+      resources :analysis_results, only: [:index, :show, :update] do
+        member do
+          get :evidence_pack
+          get :export_pdf
+        end
+      end
+      post 'webhooks/receive', to: 'webhooks#receive'
+      post "admin/seed", to: "admin#seed_incidents"
+    end
+    
+    # Insurance Assessment avec export PDF
+    resources :insurance_assessments, only: [:create, :index] do
+      member do
+        get :report, to: 'insurance_assessments#report'
+      end
+    end
+    
+    # M365 Integration
+    get 'm365/alerts', to: 'm365_alerts#index'
+    patch 'm365/alerts/:id', to: 'm365_alerts#update'
+    get 'm365/stats', to: 'm365_alerts#stats'
+    
+    # M365 Credentials Management
+    get 'm365/credentials', to: 'm365_credentials#show'
+    post 'm365/credentials', to: 'm365_credentials#create'
+    post 'm365/credentials/test', to: 'm365_credentials#test_connection'
+    post 'm365/credentials/toggle', to: 'm365_credentials#toggle_mode'
+  end
+end
+EOF
