@@ -8,20 +8,21 @@ interface User {
 }
 
 interface HeaderProps {
-  user?: User;  // ← Maintenant optionnel (avec ?)
+  user?: User;
+  currentView?: string;
+  onViewChange?: (view: 'dashboard' | 'insurance' | 'insurance-dashboard' | 'report' | 'template-preview') => void;
+  onLogout?: () => void;
 }
 
-export default function Header({ user }: HeaderProps) {
+export default function Header({ user, currentView = 'dashboard', onViewChange, onLogout }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage();
 
-  // Valeur par défaut si pas d'utilisateur connecté
   const defaultUser: User = {
     username: 'guest',
     role: 'Guest',
     displayName: 'Invité'
   };
 
-  // Utilise l'utilisateur passé en prop ou l'utilisateur par défaut
   const currentUser = user || defaultUser;
 
   const getRoleBadgeColor = (role: string) => {
@@ -38,13 +39,23 @@ export default function Header({ user }: HeaderProps) {
     return displayName.substring(0, 2).toUpperCase();
   };
 
+  const navButtonClass = (view: string) => {
+    const isActive = currentView === view;
+    if (isActive) {
+      return 'px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-lg shadow-indigo-500/40 scale-105 transition-all border border-indigo-400';
+    }
+    return 'px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-slate-700 hover:text-white hover:border-indigo-400 border border-slate-700 transition-all';
+  };
+
   return (
     <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
-      <div className="container mx-auto px-8 py-6">
+      <div className="container mx-auto px-8 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <div 
+              className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30 cursor-pointer"
+              onClick={() => onViewChange?.('dashboard')}
+            >
               <span className="text-2xl font-black text-white italic">L</span>
             </div>
             <div>
@@ -57,65 +68,61 @@ export default function Header({ user }: HeaderProps) {
             </div>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex items-center space-x-8">
-            <a href="#" className="text-sm font-bold text-white uppercase tracking-wider hover:text-indigo-400 transition-colors">
-              {t.dashboard}
-            </a>
-            <a href="#" className="text-sm font-bold text-slate-500 uppercase tracking-wider hover:text-white transition-colors">
-              {t.cartography}
-            </a>
+          <nav className="flex items-center space-x-2">
+            <button onClick={() => onViewChange?.('dashboard')} className={navButtonClass('dashboard')}>
+              SOC Dash
+            </button>
             
-            {/* Language Switcher */}
-            <div className="flex items-center gap-2 ml-4 pl-4 border-l border-slate-800">
+            <button onClick={() => onViewChange?.('report')} className={navButtonClass('report')}>
+              PDF Generator
+            </button>
+            
+            <button onClick={() => onViewChange?.('insurance-dashboard')} className={navButtonClass('insurance-dashboard')}>
+              Insurance Dash
+            </button>
+            
+            <button onClick={() => onViewChange?.('insurance')} className={navButtonClass('insurance')}>
+              New Assessment
+            </button>
+          </nav>
+
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-2 bg-slate-900/50 rounded-lg p-1 border border-slate-800">
               <button
                 onClick={() => setLanguage('fr')}
-                className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
-                  language === 'fr'
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
-                    : 'text-slate-500 hover:text-white hover:bg-slate-800'
-                }`}
+                className={language === 'fr' ? 'px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md bg-indigo-600 text-white shadow-md' : 'px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md text-slate-500 hover:text-white hover:bg-slate-800'}
               >
                 FR
               </button>
               <button
                 onClick={() => setLanguage('en')}
-                className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
-                  language === 'en'
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
-                    : 'text-slate-500 hover:text-white hover:bg-slate-800'
-                }`}
+                className={language === 'en' ? 'px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md bg-indigo-600 text-white shadow-md' : 'px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md text-slate-500 hover:text-white hover:bg-slate-800'}
               >
                 EN
               </button>
             </div>
 
-            {/* User Menu */}
-            <div className="flex items-center space-x-3 pl-4 border-l border-slate-800">
+            <div className="w-px h-6 bg-slate-700"></div>
+
+            <div className="flex items-center space-x-3">
               <div className="text-right">
                 <p className="text-xs font-bold text-white">{currentUser.displayName}</p>
-                <div className={`inline-block px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${getRoleBadgeColor(currentUser.role)}`}>
+                <div className={'inline-block px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ' + getRoleBadgeColor(currentUser.role)}>
                   {currentUser.role}
                 </div>
               </div>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
                 <span className="text-sm font-bold text-white">{getUserInitials(currentUser.displayName)}</span>
               </div>
+              {onLogout && (
+                <button 
+                  onClick={onLogout}
+                  className="px-4 py-2 text-xs font-bold text-red-400 hover:text-white hover:bg-red-600 rounded-lg transition-all uppercase tracking-wider border border-red-500/30 hover:border-red-500"
+                >
+                  Logout
+                </button>
+              )}
             </div>
-          </nav>
-        </div>
-
-        {/* Tenant Selector */}
-        <div className="mt-6 flex items-center space-x-3">
-          <select className="bg-slate-900 border border-indigo-500/30 text-white text-xs font-mono px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <option>PILOT-ALPHA (QUEBEC)</option>
-            <option>PILOT-BETA (MONTREAL)</option>
-            <option>GLOBAL-DEMO</option>
-          </select>
-          <div className="flex items-center space-x-2 text-[10px] font-mono text-slate-500">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-            <span className="uppercase tracking-wider">GLOBAL SHS TIME</span>
-            <span className="text-white font-bold">{new Date().toLocaleTimeString('fr-FR')}</span>
           </div>
         </div>
       </div>
