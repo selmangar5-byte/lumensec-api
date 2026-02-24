@@ -55,8 +55,7 @@ const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ templateType,
   };
 
   const handleBack = () => {
-    // ✅ AJOUTÉ : Signal qu'on revient d'un template pour rouvrir Loi25
-    localStorage.setItem('reopen_loi25_modal', 'true');
+    // Déclenche le retour vers App.tsx qui gère la réouverture du modal Loi25
     onBack();
   };
 
@@ -127,7 +126,7 @@ const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ templateType,
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <header className="bg-gray-900 border-b border-indigo-500/30 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          {/* ✅ MODIFIÉ : handleBack au lieu de onBack */}
+          {/* Bouton Retour : appelle handleBack qui déclenche onBack -> App.tsx -> réouverture modal */}
           <button onClick={handleBack} className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm">
             <ArrowLeft size={16} /> Retour
           </button>

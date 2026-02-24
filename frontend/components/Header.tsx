@@ -51,6 +51,7 @@ export default function Header({ user, currentView = 'dashboard', onViewChange, 
     <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
       <div className="container mx-auto px-8 py-4">
         <div className="flex items-center justify-between">
+          {/* Logo */}
           <div className="flex items-center space-x-4">
             <div 
               className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30 cursor-pointer"
@@ -68,6 +69,7 @@ export default function Header({ user, currentView = 'dashboard', onViewChange, 
             </div>
           </div>
 
+          {/* Navigation - Les 4 onglets */}
           <nav className="flex items-center space-x-2">
             <button onClick={() => onViewChange?.('dashboard')} className={navButtonClass('dashboard')}>
               SOC Dash
@@ -86,6 +88,7 @@ export default function Header({ user, currentView = 'dashboard', onViewChange, 
             </button>
           </nav>
 
+          {/* User Menu */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center gap-2 bg-slate-900/50 rounded-lg p-1 border border-slate-800">
               <button

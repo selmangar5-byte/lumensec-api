@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Incident, DashboardStats } from '../types';
 import KPISection from './KPISection';
 import CyberMap from './CyberMap';
@@ -15,13 +15,36 @@ import RansomwareWedge from './RansomwareWedge';
 interface DashboardProps {
   stats: DashboardStats;
   onSelectIncident: (id: string) => void;
-  onOpenTemplatePreview?: (templateType: string) => void; // 🆕 AJOUTÉ
+  onOpenTemplatePreview?: (templateType: string) => void;
+  onNavigate?: (view: 'insurance' | 'insurance-dashboard' | 'report') => void;
+  reopenLoi25Modal?: boolean; // AJOUTÉ
+  onLoi25ModalReopened?: () => void; // AJOUTÉ
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident, onOpenTemplatePreview }) => {
+const Dashboard: React.FC<DashboardProps> = ({ 
+  stats, 
+  onSelectIncident, 
+  onOpenTemplatePreview, 
+  onNavigate,
+  reopenLoi25Modal, // AJOUTÉ
+  onLoi25ModalReopened // AJOUTÉ
+}) => {
   const [showLoi25Modal, setShowLoi25Modal] = useState(false);
   const [showSystemHealthModal, setShowSystemHealthModal] = useState(false);
 
+  // Détecte quand on revient d'un template et rouvre le modal via props (AJOUTÉ)
+    // Détecte quand on revient d'un template et rouvre le modal via props (AJOUTÉ)
+  useEffect(() => {
+    console.log('DEBUG Dashboard: reopenLoi25Modal =', reopenLoi25Modal);
+    if (reopenLoi25Modal) {
+      console.log('DEBUG Dashboard: OUVERTURE DU MODAL!');
+      setShowLoi25Modal(true);
+      onLoi25ModalReopened?.(); // Reset le flag dans App.tsx
+    }
+  }, [reopenLoi25Modal, onLoi25ModalReopened]);
+
+  console.log('RENDER Dashboard - reopenLoi25Modal:', reopenLoi25Modal);
+  console.log('RENDER Dashboard - props reçues:', { reopenLoi25Modal, onLoi25ModalReopened: !!onLoi25ModalReopened });
   if (!stats) return <div className="text-white text-center p-10">Loading...</div>;
   
   const getSeverityLabel = (severity: number) => {
@@ -162,7 +185,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident, onOpenTe
       {showLoi25Modal && (
         <Loi25Modal 
           onClose={() => setShowLoi25Modal(false)} 
-          onOpenTemplatePreview={onOpenTemplatePreview} // 🆕 AJOUTÉ
+          onOpenTemplatePreview={onOpenTemplatePreview}
         />
       )}
       {showSystemHealthModal && <SystemHealthModal onClose={() => setShowSystemHealthModal(false)} />}

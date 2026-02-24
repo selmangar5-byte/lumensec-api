@@ -33,13 +33,18 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [showSystemHealthModal, setShowSystemHealthModal] = useState(false);
 
   // Détecte quand on revient d'un template et rouvre le modal via props (AJOUTÉ)
+    // Détecte quand on revient d'un template et rouvre le modal via props (AJOUTÉ)
   useEffect(() => {
+    console.log('DEBUG Dashboard: reopenLoi25Modal =', reopenLoi25Modal);
     if (reopenLoi25Modal) {
+      console.log('DEBUG Dashboard: OUVERTURE DU MODAL!');
       setShowLoi25Modal(true);
       onLoi25ModalReopened?.(); // Reset le flag dans App.tsx
     }
   }, [reopenLoi25Modal, onLoi25ModalReopened]);
 
+  console.log('RENDER Dashboard - reopenLoi25Modal:', reopenLoi25Modal);
+  console.log('RENDER Dashboard - props reçues:', { reopenLoi25Modal, onLoi25ModalReopened: !!onLoi25ModalReopened });
   if (!stats) return <div className="text-white text-center p-10">Loading...</div>;
   
   const getSeverityLabel = (severity: number) => {
