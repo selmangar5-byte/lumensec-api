@@ -17,25 +17,28 @@ interface DashboardProps {
   onSelectIncident: (id: string) => void;
   onOpenTemplatePreview?: (templateType: string) => void;
   onNavigate?: (view: 'insurance' | 'insurance-dashboard' | 'report') => void;
+  reopenLoi25Modal?: boolean; // AJOUTÉ
+  onLoi25ModalReopened?: () => void; // AJOUTÉ
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ 
   stats, 
   onSelectIncident, 
   onOpenTemplatePreview, 
-  onNavigate
+  onNavigate,
+  reopenLoi25Modal, // AJOUTÉ
+  onLoi25ModalReopened // AJOUTÉ
 }) => {
   const [showLoi25Modal, setShowLoi25Modal] = useState(false);
   const [showSystemHealthModal, setShowSystemHealthModal] = useState(false);
 
-  // Détecte quand on revient d'un template et rouvre le modal
+  // Détecte quand on revient d'un template et rouvre le modal via props (AJOUTÉ)
   useEffect(() => {
-    const shouldReopen = localStorage.getItem('reopen_loi25_modal');
-    if (shouldReopen === 'true') {
+    if (reopenLoi25Modal) {
       setShowLoi25Modal(true);
-      localStorage.removeItem('reopen_loi25_modal');
+      onLoi25ModalReopened?.(); // Reset le flag dans App.tsx
     }
-  }, []);
+  }, [reopenLoi25Modal, onLoi25ModalReopened]);
 
   if (!stats) return <div className="text-white text-center p-10">Loading...</div>;
   
