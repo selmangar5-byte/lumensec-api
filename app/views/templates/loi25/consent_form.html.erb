@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Formulaire de Consentement - <%= company_name %></title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; color: #333; }
+    .header { text-align: center; border-bottom: 3px solid #059669; padding-bottom: 20px; margin-bottom: 30px; }
+    .header h1 { color: #047857; margin: 0; font-size: 22px; }
+    .header p { color: #6b7280; margin: 5px 0; }
+    .intro { background-color: #ecfdf5; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #059669; }
+    .section { margin: 25px 0; }
+    .section h2 { color: #047857; font-size: 18px; border-left: 4px solid #059669; padding-left: 10px; }
+    .form-field { margin: 15px 0; padding: 10px; background-color: #f9fafb; border-radius: 5px; }
+    .form-field label { font-weight: bold; display: block; margin-bottom: 5px; color: #374151; }
+    .form-field input { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box; }
+    .checkbox { margin: 10px 0; }
+    .checkbox input { margin-right: 10px; }
+    .consent-box { border: 2px solid #059669; padding: 20px; margin: 20px 0; border-radius: 5px; background-color: #f0fdf4; }
+    .signature-line { border-top: 1px solid #333; margin-top: 40px; padding-top: 10px; width: 300px; }
+    .footer { margin-top: 50px; font-size: 11px; color: #6b7280; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .highlight { background-color: #fef3c7; padding: 10px; border-radius: 5px; border-left: 4px solid #f59e0b; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>FORMULAIRE DE CONSENTEMENT</h1>
+    <p>Collecte et traitement des données personnelles</p>
+    <p style="font-size: 14px;"><%= company_name %></p>
+  </div>
+
+  <div class="intro">
+    <strong>📋 INFORMATIONS IMPORTANTES :</strong><br>
+    Conformément à la Loi 25, nous vous informons que vos données personnelles seront traitées de manière licite, loyale et transparente. Ce formulaire vise à recueillir votre consentement libre, spécifique, éclairé et univoque.
+  </div>
+
+  <div class="section">
+    <h2>IDENTITÉ DU RESPONSABLE DU TRAITEMENT</h2>
+    <p><strong>Entreprise :</strong> <%= company_name %></p>
+    <p><strong>Adresse :</strong> <%= address %></p>
+    <p><strong>Responsable de la protection des données (DPO) :</strong> <%= dpo_name %></p>
+    <p><strong>Contact DPO :</strong> <%= dpo_email %> | <%= dpo_phone %></p>
+  </div>
+
+  <div class="section">
+    <h2>DONNÉES COLLECTÉES</h2>
+    <div class="highlight">
+      Cochez les cases correspondant aux données que vous acceptez de nous communiquer :
+    </div>
+    <div class="checkbox">
+      <input type="checkbox"> <strong>Identité :</strong> Nom, prénom, date de naissance
+    </div>
+    <div class="checkbox">
+      <input type="checkbox"> <strong>Coordonnées :</strong> Adresse, email, téléphone
+    </div>
+    <div class="checkbox">
+      <input type="checkbox"> <strong>Données professionnelles :</strong> Poste, entreprise, CV
+    </div>
+    <div class="checkbox">
+      <input type="checkbox"> <strong>Données financières :</strong> Coordonnées bancaires (si nécessaire)
+    </div>
+    <div class="checkbox">
+      <input type="checkbox"> <strong>Données de navigation :</strong> Cookies, adresse IP (via notre site web)
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>FINALITÉS DU TRAITEMENT</h2>
+    <p>Vos données seront utilisées pour :</p>
+    <ul>
+      <li>☐ Gestion de la relation client et suivi des demandes</li>
+      <li>☐ Envoi d'informations commerciales et newsletters (marketing)</li>
+      <li>☐ Gestion de commandes et facturation</li>
+      <li>☐ Recrutement et gestion RH (si candidature)</li>
+      <li>☐ Analyse et amélioration de nos services</li>
+    </ul>
+    <div class="highlight">
+      <strong>Important :</strong> Vous pouvez retirer votre consentement à tout moment pour le marketing sans que cela affecte la légalité du traitement effectué avant le retrait.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>DROITS DES PERSONNES CONCERNÉES</h2>
+    <p>Conformément à la Loi 25, vous disposez des droits suivants :</p>
+    <ul>
+      <li><strong>Droit d'accès :</strong> Obtenir confirmation que vos données sont traitées et en obtenir une copie</li>
+      <li><strong>Droit de rectification :</strong> Demander la correction des données inexactes</li>
+      <li><strong>Droit de retrait :</strong> Retirer votre consentement à tout moment</li>
+      <li><strong>Droit à l'effacement :</strong> Demander la suppression de vos données (dans certaines conditions)</li>
+      <li><strong>Droit à la portabilité :</strong> Recevoir vos données dans un format structuré</li>
+    </ul>
+    <p><strong>Pour exercer ces droits, contactez :</strong> <%= dpo_email %></p>
+  </div>
+
+  <div class="section">
+    <h2>DURÉE DE CONSERVATION</h2>
+    <p>Vos données seront conservées pendant :</p>
+    <ul>
+      <li>Données clients : Durée de la relation commerciale + 3 ans</li>
+      <li>Données prospects : 3 ans à compter du dernier contact</li>
+      <li>Données RH : 5 ans après la fin de la relation</li>
+    </ul>
+  </div>
+
+  <div class="consent-box">
+    <h3 style="margin-top: 0; color: #047857;">CONSENTEMENT EXPLICITE</h3>
+    <p>Je soussigné(e) :</p>
+    
+    <div class="form-field">
+      <label>Nom et prénom :</label>
+      <input type="text" placeholder="Nom complet">
+    </div>
+    
+    <div class="grid-2">
+      <div class="form-field">
+        <label>Date de naissance :</label>
+        <input type="text" placeholder="JJ/MM/AAAA">
+      </div>
+      <div class="form-field">
+        <label>Date du jour :</label>
+        <input type="text" value="<%= date %>" readonly style="background-color: #e5e7eb;">
+      </div>
+    </div>
+
+    <p style="margin-top: 20px;"><strong>Consens librement au traitement de mes données personnelles</strong> par <%= company_name %> pour les finalités décrites ci-dessus.</p>
+    
+    <div class="checkbox" style="margin: 20px 0;">
+      <input type="checkbox"> <strong>J'ai lu et compris les informations ci-dessus</strong>
+    </div>
+    
+    <div class="checkbox" style="margin: 20px 0;">
+      <input type="checkbox"> <strong>J'accepte de recevoir des communications marketing</strong> (facultatif, cocher si désiré)
+    </div>
+
+    <div style="margin-top: 30px;">
+      <p><strong>Signature du client :</strong></p>
+      <div class="signature-line">
+        Date : <%= date %>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>RÉVOCATION DU CONSENTEMENT</h3>
+    <p>Pour retirer votre consentement à tout moment, envoyez un email à : <strong><%= dpo_email %></strong> ou écrivez à l'adresse : <%= address %></p>
+  </div>
+
+  <div class="footer">
+    <p>Document généré par LumenSec - Conformité Loi 25 Québec</p>
+    <p>Article 12 - Consentement des personnes concernées - <%= year %></p>
+    <p>Ce document doit être conservé par l'entreprise pendant la durée du traitement + 3 ans</p>
+  </div>
+</body>
+</html>

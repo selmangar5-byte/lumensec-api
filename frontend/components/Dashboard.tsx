@@ -6,18 +6,19 @@ import SOCTerminal from './SOCTerminal';
 import SystemHealth from './SystemHealth';
 import ReportCenter from './ReportCenter';
 import AuditLogExplorer from './AuditLogExplorer';
-import CommunityRulesMarket from './CommunityRulesMarket';
 import Loi25Modal from './Loi25Modal';
 import SystemHealthModal from './SystemHealthModal';
 import M365Alerts from './M365Alerts';
 import M365Config from './M365Config';
+import RansomwareWedge from './RansomwareWedge';
 
 interface DashboardProps {
   stats: DashboardStats;
   onSelectIncident: (id: string) => void;
+  onOpenTemplatePreview?: (templateType: string) => void; // 🆕 AJOUTÉ
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
+const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident, onOpenTemplatePreview }) => {
   const [showLoi25Modal, setShowLoi25Modal] = useState(false);
   const [showSystemHealthModal, setShowSystemHealthModal] = useState(false);
 
@@ -48,7 +49,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
       <KPISection stats={stats} />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8 space-y-8">
+        <div className="lg:col-span-7 space-y-8">
           {/* Section Ingestion Master Radar */}
           <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl relative group/table">
             <div className="px-10 py-8 border-b border-slate-800/50 flex justify-between items-center bg-slate-900/40">
@@ -117,7 +118,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
           <SOCTerminal />
         </div>
 
-        <div className="lg:col-span-4 space-y-8">
+        <div className="lg:col-span-5 space-y-8">
           {/* Loi 25 Compliance - Clickable */}
           <div 
             onClick={() => setShowLoi25Modal(true)}
@@ -141,20 +142,29 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onSelectIncident }) => {
             </p>
           </div>
 
-          <ReportCenter />
-          
           {/* System Health - Clickable wrapper */}
           <div onClick={() => setShowSystemHealthModal(true)} className="cursor-pointer">
             <SystemHealth />
           </div>
+
+          {/* Ransomware Wedge */}
+          <RansomwareWedge />
           
-          <CommunityRulesMarket />
+          <ReportCenter />
+
+          <div className="h-4"></div>
+
           <CyberMap />
         </div>
       </div>
 
-      {/* Modals */}
-      {showLoi25Modal && <Loi25Modal onClose={() => setShowLoi25Modal(false)} />}
+      {/* Modals - Loi25Modal avec la prop onOpenTemplatePreview */}
+      {showLoi25Modal && (
+        <Loi25Modal 
+          onClose={() => setShowLoi25Modal(false)} 
+          onOpenTemplatePreview={onOpenTemplatePreview} // 🆕 AJOUTÉ
+        />
+      )}
       {showSystemHealthModal && <SystemHealthModal onClose={() => setShowSystemHealthModal(false)} />}
     </div>
   );

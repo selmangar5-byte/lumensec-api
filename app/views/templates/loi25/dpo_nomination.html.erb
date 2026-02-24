@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Lettre de Nomination DPO - <%= company_name %></title>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      line-height: 1.6; 
+      color: #1f2937; 
+      background: #f3f4f6;
+    }
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 0 30px rgba(0,0,0,0.1);
+    }
+    .header { 
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+      color: white;
+      padding: 40px; 
+      text-align: center;
+    }
+    .header h1 { 
+      margin: 0; 
+      font-size: 22px; 
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      line-height: 1.3;
+    }
+    .content {
+      padding: 50px 60px;
+    }
+    .date { 
+      text-align: right; 
+      margin-bottom: 30px;
+      color: #4b5563;
+      font-size: 14px;
+    }
+    .company { 
+      font-size: 18px; 
+      font-weight: bold; 
+      margin-bottom: 5px;
+      color: #1e40af;
+    }
+    .letter-content { 
+      margin: 30px 0; 
+      text-align: justify; 
+    }
+    .letter-content p {
+      margin: 16px 0;
+    }
+    .highlight-name {
+      text-align: center; 
+      font-size: 20px; 
+      margin: 30px 0;
+      padding: 20px;
+      background: #dbeafe;
+      border-left: 4px solid #2563eb;
+      border-radius: 0 8px 8px 0;
+      color: #1e40af;
+      font-weight: bold;
+    }
+    h3 {
+      color: #1e40af;
+      border-left: 4px solid #3b82f6;
+      padding-left: 15px;
+      margin-top: 30px;
+    }
+    ul {
+      line-height: 2;
+    }
+    .contact-box {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      display: inline-block;
+    }
+    .signature-section {
+      margin-top: 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+    .signature-block {
+      width: 100%;
+    }
+    .label { 
+      font-weight: 600; 
+      margin-bottom: 10px;
+      color: #374151;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    .line { 
+      border-bottom: 2px solid #1e40af; 
+      margin: 40px 0 10px 0; 
+      width: 100%; 
+    }
+    .footer { 
+      background: #f9fafb;
+      padding: 20px 60px;
+      text-align: center; 
+      font-size: 11px; 
+      color: #6b7280; 
+      border-top: 1px solid #e5e7eb;
+      margin-top: 50px;
+    }
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>LETTRE DE NOMINATION<br>DU RESPONSABLE DE LA PROTECTION<br>DES RENSEIGNEMENTS PERSONNELS</h1>
+    </div>
+    
+    <div class="content">
+      <div class="date">Fait le : <%= date %></div>
+      
+      <div class="company"><%= company_name %></div>
+      <div style="color: #6b7280; margin-bottom: 30px;">À l'attention de tous les employés et collaborateurs</div>
+
+      <div class="letter-content">
+        <p>Conformément à la <strong>Loi 25</strong> (Loi modernisant des dispositions législatives en matière de protection des renseignements personnels) et au Règlement sur la protection des renseignements personnels dans le secteur privé, la société <strong><%= company_name %></strong> nomme :</p>
+        
+        <div class="highlight-name">
+          <%= dpo_name %>
+        </div>
+        
+        <p>en tant que <strong>Responsable de la protection des renseignements personnels</strong> (DPO - Data Protection Officer).</p>
+        
+        <h3>Missions et responsabilités :</h3>
+        <ul>
+          <li>Veiller au respect de la Loi 25 et des politiques internes de protection des données</li>
+          <li>Répondre aux demandes d'accès, de rectification et de retrait des personnes concernées</li>
+          <li>Conseiller l'organisation sur les obligations en matière de protection des données</li>
+          <li>Coopérer avec la Commission d'accès à l'information (CAI) en cas de contrôle</li>
+          <li>Notifier la CAI en cas de violation de données présentant un risque sérieux</li>
+          <li>Tenir à jour le registre des données personnelles</li>
+        </ul>
+        
+        <h3>Contact :</h3>
+        <div class="contact-box">
+          📧 Email : <%= dpo_email %><br>
+          📞 Téléphone : <%= dpo_phone %>
+        </div>
+        
+        <p>Cette nomination prend effet immédiatement. Toute question relative à la protection de vos données personnelles ou celles de nos clients doit être adressée à <%= dpo_name %>.</p>
+      </div>
+
+      <div class="signature-section">
+        <div class="signature-block">
+          <div class="label">Pour <%= company_name %> :</div>
+          <div class="line"></div>
+          <div>Signature et cachet</div>
+          <div style="margin-top: 5px; font-size: 12px; color: #6b7280;">(Dirigeant ou représentant légal)</div>
+        </div>
+        
+        <div class="signature-block">
+          <div class="label">Le DPO désigné :</div>
+          <div class="line"></div>
+          <div><%= dpo_name %></div>
+          <div style="margin-top: 5px; font-size: 12px; color: #6b7280;">Date : ___________</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p><strong>Document confidentiel</strong> - Cette nomination doit être conservée dans le dossier juridique de l'entreprise et communiquée à tous les employés.</p>
+      <p>Référence légale : Loi 25, chapitre P-39.1 du Code civil du Québec. | Document généré par LumenSec</p>
+    </div>
+  </div>
+</body>
+</html>

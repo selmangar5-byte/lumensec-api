@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Politique de Confidentialité - <%= company_name %></title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; color: #333; }
+    .header { text-align: center; border-bottom: 3px solid #4f46e5; padding-bottom: 20px; margin-bottom: 30px; }
+    .header h1 { color: #4338ca; margin: 0; font-size: 24px; }
+    .header p { color: #6b7280; margin: 5px 0; }
+    .section { margin: 30px 0; }
+    .section h2 { color: #4338ca; font-size: 18px; border-left: 4px solid #4f46e5; padding-left: 10px; margin-top: 30px; }
+    .section h3 { color: #1e40af; font-size: 15px; margin-top: 20px; }
+    .intro { background-color: #eef2ff; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #4f46e5; }
+    .footer { margin-top: 50px; font-size: 11px; color: #6b7280; text-align: center; border-top: 2px solid #4f46e5; padding-top: 20px; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th { background-color: #4338ca; color: white; padding: 10px; text-align: left; }
+    td { padding: 10px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+    tr:nth-child(even) { background-color: #f9fafb; }
+    ul { margin: 10px 0; }
+    li { margin: 5px 0; }
+    .highlight { background-color: #fef3c7; padding: 10px; border-radius: 5px; border-left: 4px solid #f59e0b; margin: 15px 0; }
+    .contact-box { background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>POLITIQUE DE CONFIDENTIALITÉ</h1>
+    <p>Protection des renseignements personnels</p>
+    <p style="font-size: 16px; font-weight: bold; color: #4338ca;"><%= company_name %></p>
+  </div>
+
+  <div class="intro">
+    <strong>ENGAGEMENT :</strong> <%= company_name %> s'engage à protéger la vie privée des personnes dont nous traitons les données personnelles. Cette politique décrit nos pratiques conformément à la <strong>Loi 25</strong> (Loi modernisant des dispositions législatives en matière de protection des renseignements personnels) au Québec.
+  </div>
+
+  <div class="section">
+    <h2>1. RESPONSABLE DU TRAITEMENT</h2>
+    <p><strong>Entreprise :</strong> <%= company_name %></p>
+    <p><strong>Adresse :</strong> <%= address %></p>
+    <p><strong>Responsable de la protection des données (DPO) :</strong> <%= dpo_name %></p>
+    <div class="contact-box">
+      <strong>Contact pour toute question sur la protection de vos données :</strong><br>
+      📧 <%= dpo_email %> | 📞 <%= dpo_phone %>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>2. DONNÉES COLLECTÉES</h2>
+    <p>Nous collectons et traitons les catégories de données suivantes :</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Catégorie</th>
+          <th>Exemples de données</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Données d'identification</td>
+          <td>Nom, prénom, date de naissance, numéro de téléphone, adresse courriel, adresse postale</td>
+          <td>Directement auprès de vous</td>
+        </tr>
+        <tr>
+          <td>Données professionnelles</td>
+          <td>Fonction, entreprise, CV, parcours professionnel</td>
+          <td>Directement ou LinkedIn</td>
+        </tr>
+        <tr>
+          <td>Données financières</td>
+          <td>Coordonnées bancaires (uniquement pour transactions)</td>
+          <td>Directement auprès de vous</td>
+        </tr>
+        <tr>
+          <td>Données de connexion</td>
+          <td>Adresse IP, cookies, historique de navigation sur notre site</td>
+          <td>Automatiquement (cookies)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>3. FINALITÉS DU TRAITEMENT</h2>
+    <p>Vos données sont collectées pour les finalités suivantes :</p>
+    <ul>
+      <li><strong>Gestion de la relation client :</strong> Exécution des contrats, support client, facturation</li>
+      <li><strong>Marketing et prospection :</strong> Envoi d'informations sur nos services (avec votre consentement)</li>
+      <li><strong>Gestion des candidatures :</strong> Recrutement et processus de sélection</li>
+      <li><strong>Obligations légales :</strong> Conformité fiscale, comptable et réglementaire</li>
+      <li><strong>Sécurité :</strong> Prévention de la fraude et sécurisation de nos systèmes</li>
+    </ul>
+    <div class="highlight">
+      <strong>Principe de limitation :</strong> Nous ne collectons que les données strictement nécessaires aux finalités décrites ci-dessus.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>4. BASE LÉGALE DU TRAITEMENT</h2>
+    <p>Conformément à la Loi 25, nos traitements reposent sur :</p>
+    <ul>
+      <li><strong>L'exécution d'un contrat</strong> (article 12) : lorsque le traitement est nécessaire à l'exécution d'un contrat auquel vous êtes partie</li>
+      <li><strong>Le consentement</strong> (article 12) : pour les communications marketing et les cookies non essentiels</li>
+      <li><strong>L'intérêt légitime</strong> : pour la sécurité de nos systèmes et la prévention de la fraude</li>
+      <li><strong>L'obligation légale</strong> : pour nos obligations comptables et fiscales</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>5. DURÉE DE CONSERVATION</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Type de données</th>
+          <th>Durée de conservation</th>
+          <th>Justification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Données clients actifs</td>
+          <td>Durée de la relation + 3 ans</td>
+          <td>Prescription civile commerciale</td>
+        </tr>
+        <tr>
+          <td>Données prospects</td>
+          <td>3 ans à compter du dernier contact</td>
+          <td>Délai de prescription</td>
+        </tr>
+        <tr>
+          <td>Données RH (candidatures retenues)</td>
+          <td>5 ans après le départ du salarié</td>
+          <td>Obligations légales RH</td>
+        </tr>
+        <tr>
+          <td>Données RH (candidatures non retenues)</td>
+          <td>2 ans après le dernier contact</td>
+          <td>Conservation limitée</td>
+        </tr>
+        <tr>
+          <td>Données comptables/fiscales</td>
+          <td>6 ans (Code fiscal)</td>
+          <td>Obligation légale</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>6. DESTINATAIRES DES DONNÉES</h2>
+    <p>Vos données peuvent être communiquées à :</p>
+    <ul>
+      <li><strong>Notre personnel :</strong> Uniquement les employés autorisés, dans la limite de leurs attributions</li>
+      <li><strong>Nos sous-traitants :</strong> Hébergeur cloud, prestataire emailing, comptable (avec contrats de protection)</li>
+      <li><strong>Les autorités :</strong> En cas d'obligation légale ou de demande judiciaire</li>
+    </ul>
+    <p><strong>Nous ne vendons jamais vos données personnelles à des tiers.</strong></p>
+  </div>
+
+  <div class="section">
+    <h2>7. TRANSFERTS HORS QUÉBEC</h2>
+    <p>En principe, vos données sont hébergées au Québec/Canada. Si un transfert hors du Québec était nécessaire (ex: outil cloud américain), nous nous assurons que :</p>
+    <ul>
+      <li>Le pays de destination offre une protection adéquate, OU</li>
+      <li>Des clauses contractuelles appropriées sont signées avec le destinataire</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>8. VOS DROITS</h2>
+    <p>Conformément à la Loi 25, vous disposez des droits suivants :</p>
+    
+    <h3>8.1 Droit d'accès (Article 23)</h3>
+    <p>Obtenir la confirmation que des données vous concernant sont traitées, et accéder à ces données sous une forme compréhensible.</p>
+    
+    <h3>8.2 Droit de rectification (Article 24)</h3>
+    <p>Obtenir la rectification des données inexactes ou incomplètes vous concernant.</p>
+    
+    <h3>8.3 Droit de retrait (Article 20)</h3>
+    <p>Retirer votre consentement à tout moment pour les traitements basés sur le consentement (marketing).</p>
+    
+    <h3>8.4 Droit à l'effacement (Article 25)</h3>
+    <p>Obtenir l'effacement de vos données dans certains cas (données devenues inutiles, retrait du consentement, etc.).</p>
+    
+    <h3>8.5 Droit à la portabilité</h3>
+    <p>Recevoir vos données dans un format structuré et couramment utilisé.</p>
+    
+    <h3>8.6 Droit d'opposition</h3>
+    <p>Vous opposer au traitement de vos données pour des motifs légitimes (hors obligations légales).</p>
+    
+    <div class="highlight">
+      <strong>Comment exercer vos droits ?</strong> Envoyez une demande écrite à <%= dpo_email %> avec une copie de votre pièce d'identité. Nous répondons dans un délai de 30 jours maximum.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>9. SÉCURITÉ DES DONNÉES</h2>
+    <p>Nous mettons en œuvre des mesures techniques et organisationnelles appropriées :</p>
+    <ul>
+      <li>Chiffrement des données sensibles</li>
+      <li>Contrôles d'accès stricts (authentification forte)</li>
+      <li>Sauvegardes régulières et sécurisées</li>
+      <li>Formation du personnel à la protection des données</li>
+      <li>Journalisation des accès aux données</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>10. COOKIES ET TRACKING</h2>
+    <p>Notre site utilise :</p>
+    <ul>
+      <li><strong>Cookies essentiels :</strong> Nécessaires au fonctionnement du site (pas de consentement requis)</li>
+      <li><strong>Cookies analytiques :</strong> Mesure d'audience (consentement requis)</li>
+      <li><strong>Cookies marketing :</strong> Publicité ciblée (consentement requis)</li>
+    </ul>
+    <p>Vous pouvez gérer vos préférences via notre bandeau cookies ou paramètres du navigateur.</p>
+  </div>
+
+  <div class="section">
+    <h2>11. MODIFICATIONS DE LA POLITIQUE</h2>
+    <p>Nous pouvons modifier cette politique à tout moment. La version en vigueur est publiée sur notre site avec la date de dernière mise à jour : <strong><%= date %></strong>.</p>
+  </div>
+
+  <div class="section">
+    <h2>12. RÉCLAMATIONS</h2>
+    <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez déposer une plainte auprès de :</p>
+    <div class="contact-box">
+      <strong>Commission d'accès à l'information du Québec</strong><br>
+      2045, rue Stanley, bureau 900, Montréal (Québec) H3A 2V4<br>
+      📞 1-888-528-7741 | 🌐 www.cai.gouv.qc.ca
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Document généré par LumenSec - Conformité Loi 25 Québec</p>
+    <p>Dernière mise à jour : <%= date %> - <%= year %></p>
+    <p>Cette politique doit être affichée sur le site web de l'entreprise et communiquée aux clients</p>
+  </div>
+</body>
+</html>

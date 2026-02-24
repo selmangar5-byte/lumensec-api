@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Procédure Violation 72h - <%= company_name %></title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; color: #333; }
+    .header { text-align: center; border-bottom: 3px solid #dc2626; padding-bottom: 20px; margin-bottom: 30px; }
+    .header h1 { color: #991b1b; margin: 0; font-size: 24px; }
+    .header p { color: #6b7280; margin: 5px 0; }
+    .alert { background-color: #fef2f2; border: 2px solid #dc2626; color: #991b1b; padding: 15px; border-radius: 5px; margin: 20px 0; font-weight: bold; }
+    .section { margin: 25px 0; }
+    .section h2 { color: #991b1b; font-size: 18px; border-left: 4px solid #dc2626; padding-left: 10px; }
+    .section h3 { color: #1e40af; font-size: 15px; margin-top: 20px; }
+    .steps { counter-reset: step; }
+    .step { margin: 15px 0; padding: 15px; background-color: #f9fafb; border-left: 4px solid #2563eb; }
+    .step::before { counter-increment: step; content: "ÉTAPE " counter(step) " : "; font-weight: bold; color: #2563eb; }
+    .contact-box { background-color: #dbeafe; padding: 15px; border-radius: 5px; margin: 15px 0; }
+    .footer { margin-top: 50px; font-size: 12px; color: #6b7280; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th { background-color: #991b1b; color: white; padding: 10px; text-align: left; }
+    td { padding: 10px; border-bottom: 1px solid #e5e7eb; }
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { margin: 8px 0; padding-left: 25px; position: relative; }
+    .checklist li::before { content: "☐"; position: absolute; left: 0; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>PROCÉDURE DE GESTION D'UNE VIOLATION DE DONNÉES</h1>
+    <p>Article 19 de la Loi 25 - Notification sous 72 heures</p>
+    <p style="font-size: 14px;"><%= company_name %></p>
+  </div>
+
+  <div class="alert">
+    ⚠️ OBLIGATION : Toute violation de données personnelles présentant un risque sérieux doit être notifiée à la Commission d'accès à l'information (CAI) dans un délai de 72 heures maximum après la prise de connaissance.
+  </div>
+
+  <div class="section">
+    <h2>QUI CONTACTER EN CAS D'URGENCE ?</h2>
+    <div class="contact-box">
+      <p><strong>DPO Responsable :</strong> <%= dpo_name %></p>
+      <p><strong>Email :</strong> <%= dpo_email %></p>
+      <p><strong>Téléphone :</strong> <%= dpo_phone %></p>
+      <p><strong>Commission d'accès à l'information :</strong> 1-888-528-7741 | www.cai.gouv.qc.ca</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>PROTOCOLE EN 6 ÉTAPES</h2>
+    <div class="steps">
+      <div class="step">
+        <strong>IDENTIFICATION IMMÉDIATE</strong><br>
+        Identifier la nature de la violation (accès non autorisé, perte, vol, corruption). Déterminer quelles données sont concernées et combien de personnes sont touchées.
+      </div>
+      
+      <div class="step">
+        <strong>CONFINEMENT</strong><br>
+        Stopper immédiatement la violation. Isoler les systèmes compromis. Changer les mots de passe si nécessaire. Préserver les preuves.
+      </div>
+      
+      <div class="step">
+        <strong>ÉVALUATION DU RISQUE</strong><br>
+        Évaluer si la violation présente un "risque sérieux" pour les personnes concernées (discrimination, vol d'identité, perte financière, atteinte à la réputation).
+      </div>
+      
+      <div class="step">
+        <strong>NOTIFICATION À LA CAI (si risque sérieux)</strong><br>
+        Dans les 72h maximum via le formulaire en ligne de la CAI :<br>
+        • Description de la violation<br>
+        • Catégories et nombre approximatif de personnes concernées<br>
+        • Mesures prises ou proposées<br>
+        • Coordonnées du DPO
+      </div>
+      
+      <div class="step">
+        <strong>NOTIFICATION AUX PERSONNES CONCERNÉES</strong><br>
+        Si risque sérieux pour leur vie privée, les notifier sans délai par email, téléphone ou courrier (si email non disponible) avec :<br>
+        • Description claire de l'incident<br>
+        • Mesures prises<br>
+        • Conseils pour se protéger<br>
+        • Coordonnées du DPO
+      </div>
+      
+      <div class="step">
+        <strong>DOCUMENTATION</strong><br>
+        Tenir un registre des violations : date, description, conséquences, mesures prises, notifications effectuées.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>CRITÈRES DE "RISQUE SÉRIEUX"</h2>
+    <p>Une notification est obligatoire si la violation peut entraîner :</p>
+    <ul class="checklist">
+      <li>Perte financière (fraude, usurpation d'identité)</li>
+      <li>Discrimination ou préjudice social</li>
+      <li>Atteinte à la réputation professionnelle ou personnelle</li>
+      <li>Violation des données sensibles (santé, origine ethnique, opinions politiques, etc.)</li>
+      <li>Données de mineurs</li>
+      <li>Grande quantité de données concernées</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>FORMULAIRE DE DÉCLARATION INTERNE</h2>
+    <table>
+      <tr>
+        <th colspan="2">RAPPORT DE VIOLATION DE DONNÉES</th>
+      </tr>
+      <tr>
+        <td><strong>Date de découverte :</strong></td>
+        <td>__/__/____ __:__</td>
+      </tr>
+      <tr>
+        <td><strong>Découvert par :</strong></td>
+        <td>_________________________</td>
+      </tr>
+      <tr>
+        <td><strong>Type de violation :</strong></td>
+        <td>☐ Perte ☐ Vol ☐ Accès non autorisé ☐ Corruption ☐ Autre</td>
+      </tr>
+      <tr>
+        <td><strong>Données concernées :</strong></td>
+        <td>_________________________</td>
+      </tr>
+      <tr>
+        <td><strong>Nombre de personnes :</strong></td>
+        <td>_________________________</td>
+      </tr>
+      <tr>
+        <td><strong>Risque sérieux :</strong></td>
+        <td>☐ Oui (notifier CAI dans 72h) ☐ Non (documenter seulement)</td>
+      </tr>
+      <tr>
+        <td><strong>Mesures prises :</strong></td>
+        <td>_________________________</td>
+      </tr>
+      <tr>
+        <td><strong>Signature DPO :</strong></td>
+        <td>_________________________ Date : <%= date %></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>RÉVISION DE LA PROCÉDURE</h3>
+    <p>Dernière mise à jour : <%= date %><br>
+    Prochaine révision : _______________<br>
+    Responsable : <%= dpo_name %></p>
+  </div>
+
+  <div class="footer">
+    <p>Document généré par LumenSec - Conformité Loi 25 Québec</p>
+    <p>Article 19 - Notification des violations de données personnelles - <%= year %></p>
+  </div>
+</body>
+</html>

@@ -7,86 +7,82 @@ import Login from './components/Login';
 import IncidentDetail from './components/IncidentDetail';
 import InsuranceQuestionnaire from './components/InsuranceQuestionnaire';
 import InsuranceDashboard from './components/InsuranceDashboard';
+import ReportModal from './components/ReportModal';
+import TemplatePreviewPage from './pages/TemplatePreviewPage';
 import { LanguageProvider } from './contexts/LanguageContext';
-
-interface User {
-  username: string;
-  role: string;
-  displayName: string;
-}
 
 export default function App() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [authenticated, setAuthenticated] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
- const [currentView, setCurrentView] = useState<'dashboard' | 'insurance' | 'insurance-dashboard'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'insurance' | 'insurance-dashboard' | 'report' | 'template-preview'>('dashboard');
+  const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [reopenLoi25Modal, setReopenLoi25Modal] = useState(false); // AJOUTÉ : pour rouvrir Loi25 au retour
 
   useEffect(() => {
-    if (user && currentView === 'dashboard') {
-      lumensecAPI.getDashboardStats()
-        .then(setStats)
-        .catch(err => setError(err.message));
+    if (authenticated) {
+      loadStats();
     }
-  }, [user, currentView]);
+  }, [authenticated]);
 
-  if (!user) {
-    return <Login onLogin={(userData) => setUser(userData)} />;
+  const loadStats = async () => {
+    try {
+      const data = await lumensecAPI.getDashboardStats();
+      setStats(data);
+    } catch (err) {
+      setError('Erreur chargement données');
+    }
+  };
+
+  if (!authenticated) {
+    return <Login onLogin={() => setAuthenticated(true)} />;
   }
-
-  const selectedIncident = selectedIncidentId && stats
-    ? stats.recent_incidents.find(i => i.id.toString() === selectedIncidentId)
-    : null;
 
   return (
     <LanguageProvider>
-      <div className="min-h-screen bg-slate-900">
-        <Header user={user} />
+      <div className="min-h-screen bg-slate-950">
+        <Header 
+          currentView={currentView} 
+          onViewChange={setCurrentView}
+          onLogout={() => setAuthenticated(false)}
+        />
         
-        <div className="px-4 py-3 border-b border-slate-700">
-          <button
-            onClick={() => setCurrentView('dashboard')}
-            className={`px-4 py-2 mr-2 rounded ${currentView === 'dashboard' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-gray-300'}`}
-          >
-            SOC Dashboard
-          </button>
-          <button
-            onClick={() => setCurrentView('insurance-dashboard')}
-            className={`px-4 py-2 mr-2 rounded ${currentView === 'insurance-dashboard' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-gray-300'}`}
-          >
-            Insurance Dashboard
-          </button>
-          <button
-            onClick={() => setCurrentView('insurance')}
-            className={`px-4 py-2 rounded ${currentView === 'insurance' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-gray-300'}`}
-          >
-            New Assessment
-          </button>
-        </div>
-
-        {error && (
-          <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 mx-4 mt-4 rounded">
-            {error}
-          </div>
-        )}
-
-        {currentView === 'dashboard' ? (
-          <Dashboard 
-            stats={stats} 
-            onSelectIncident={(id) => setSelectedIncidentId(id)}
-          />
-        ) : currentView === 'insurance-dashboard' ? (
-          <InsuranceDashboard user={user} />
-        ) : (
-          <InsuranceQuestionnaire user={user} />
-        )}
-
-        {selectedIncident && (
-          <IncidentDetail
-            incident={selectedIncident}
-            onClose={() => setSelectedIncidentId(null)}
-          />
-        )}
+        <main className="container mx-auto p-6">
+          {currentView === 'dashboard' && (
+            <Dashboard 
+              stats={stats} 
+              onSelectIncident={setSelectedIncidentId}
+              onOpenTemplatePreview={(type) => {
+                setSelectedTemplate(type || '');
+                setCurrentView('template-preview');
+              }}
+              onNavigate={setCurrentView}
+              reopenLoi25Modal={reopenLoi25Modal} // AJOUTÉ
+              onLoi25ModalReopened={() => setReopenLoi25Modal(false)} // AJOUTÉ
+            />
+          )}
+          
+          {currentView === 'insurance' && <InsuranceQuestionnaire />}
+          {currentView === 'insurance-dashboard' && <InsuranceDashboard />}
+          {currentView === 'report' && <ReportModal onClose={() => setCurrentView('dashboard')} />}
+          {currentView === 'template-preview' && (
+            <TemplatePreviewPage 
+              templateType={selectedTemplate} 
+              onBack={() => {
+                setCurrentView('dashboard');
+                setReopenLoi25Modal(true); // AJOUTÉ : signale qu'il faut rouvrir Loi25
+              }} 
+            />
+          )}
+          
+          {selectedIncidentId && (
+            <IncidentDetail 
+              incidentId={selectedIncidentId} 
+              onClose={() => setSelectedIncidentId(null)}
+            />
+          )}
+        </main>
       </div>
     </LanguageProvider>
   );

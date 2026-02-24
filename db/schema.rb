@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_12_231226) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_22_153845) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,6 +69,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_12_231226) do
     t.index ["tenant_id"], name: "index_insurance_assessments_on_tenant_id"
   end
 
+  create_table "loi25_assessments", force: :cascade do |t|
+    t.string "tenant_id"
+    t.integer "score"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "details"
+    t.boolean "governance"
+    t.boolean "data_inventory"
+    t.boolean "consent_management"
+    t.boolean "security_measures"
+    t.boolean "breach_notification"
+    t.boolean "data_retention"
+  end
+
   create_table "m365_alerts", force: :cascade do |t|
     t.string "tenant_id"
     t.string "alert_id"
@@ -98,6 +113,27 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_12_231226) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_m365_credentials_on_tenant_id", unique: true
+  end
+
+  create_table "ransomware_assessments", force: :cascade do |t|
+    t.string "tenant_id"
+    t.integer "score"
+    t.string "status"
+    t.jsonb "answers"
+    t.integer "backup_score"
+    t.integer "isolation_score"
+    t.integer "detection_score"
+    t.integer "response_score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tenants", force: :cascade do |t|
+    t.string "name"
+    t.string "domain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "webhook_secret"
   end
 
   add_foreign_key "evidence_packs", "analysis_results"

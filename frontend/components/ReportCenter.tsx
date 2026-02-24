@@ -19,9 +19,9 @@ export default function ReportingCenter({ stats }: ReportingCenterProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Reporting Center</h3>
+            <h3 className="text-lg font-bold text-white uppercase tracking-wider">Reporting Center</h3>
           </div>
-          <span className="text-[10px] text-green-400 font-mono uppercase tracking-widest px-3 py-1 bg-green-500/10 border border-green-500/20 rounded">Ready</span>
+          <span className="text-xs text-green-400 font-mono uppercase tracking-widest px-3 py-1 bg-green-500/10 border border-green-500/20 rounded">Ready</span>
         </div>
 
         <div className="space-y-3">
@@ -37,8 +37,8 @@ export default function ReportingCenter({ stats }: ReportingCenterProps) {
                   </svg>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-semibold text-white">Daily</div>
-                  <div className="text-[10px] text-slate-400 font-mono">Last 24h Activities</div>
+                  <div className="text-base font-semibold text-white">Daily</div>
+                  <div className="text-xs text-slate-400 font-mono">Last 24h Activities</div>
                 </div>
               </div>
               <svg className="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,8 +59,8 @@ export default function ReportingCenter({ stats }: ReportingCenterProps) {
                   </svg>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-semibold text-white">Weekly</div>
-                  <div className="text-[10px] text-slate-400 font-mono">7-day Immunity Trends</div>
+                  <div className="text-base font-semibold text-white">Weekly</div>
+                  <div className="text-xs text-slate-400 font-mono">7-day Immunity Trends</div>
                 </div>
               </div>
               <svg className="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -81,8 +81,8 @@ export default function ReportingCenter({ stats }: ReportingCenterProps) {
                   </svg>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-semibold text-white">Monthly</div>
-                  <div className="text-[10px] text-slate-400 font-mono">Global Security Summary</div>
+                  <div className="text-base font-semibold text-white">Monthly</div>
+                  <div className="text-xs text-slate-400 font-mono">Global Security Summary</div>
                 </div>
               </div>
               <svg className="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -13,21 +13,21 @@ const SystemHealth: React.FC = () => {
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-emerald-500 to-indigo-500 opacity-30 group-hover:opacity-60 transition-opacity"></div>
       
       <div className="flex items-center justify-between mb-8">
-        <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em] italic flex items-center">
-          <span className="w-2 h-2 bg-emerald-500 rounded-full mr-3 animate-pulse"></span>
+        <h3 className="text-lg font-black text-white uppercase tracking-[0.1em] italic flex items-center">
+          <span className="w-3 h-3 bg-emerald-500 rounded-full mr-3 animate-pulse"></span>
           System Health Diagnostics
         </h3>
-        <span className="text-emerald-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity">Click for details →</span>
+        <span className="text-emerald-400 text-sm opacity-0 group-hover:opacity-100 transition-opacity font-medium">Click for details →</span>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-6">
         {modules.map((mod, i) => (
-          <div key={i} className="flex flex-col space-y-2">
-            <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest">
-              <span className="text-slate-400">{mod.name}</span>
-              <span className={`text-${mod.color}-400 italic`}>{mod.status}</span>
+          <div key={i} className="flex flex-col space-y-3">
+            <div className="flex justify-between items-center text-sm font-bold uppercase tracking-wider">
+              <span className="text-slate-200 text-base tracking-wide">{mod.name}</span>
+              <span className={`text-${mod.color}-400 italic text-sm font-black`}>{mod.status}</span>
             </div>
-            <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+            <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
               <div 
                 className={`h-full bg-${mod.color}-500 transition-all duration-1000 shadow-[0_0_10px_rgba(var(--${mod.color}-500),0.5)]`}
                 style={{ width: mod.load }}
@@ -38,8 +38,8 @@ const SystemHealth: React.FC = () => {
       </div>
 
       <div className="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center">
-         <span className="text-[8px] font-mono text-slate-500 uppercase tracking-widest">Global Integrity</span>
-         <span className="text-[10px] font-black text-emerald-400 italic">99.9% SECURE</span>
+         <span className="text-sm font-mono text-slate-400 uppercase tracking-widest">Global Integrity</span>
+         <span className="text-base font-black text-emerald-400 italic">99.9% SECURE</span>
       </div>
     </div>
   );

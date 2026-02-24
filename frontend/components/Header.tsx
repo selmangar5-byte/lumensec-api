@@ -8,11 +8,21 @@ interface User {
 }
 
 interface HeaderProps {
-  user: User;
+  user?: User;  // ← Maintenant optionnel (avec ?)
 }
 
 export default function Header({ user }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage();
+
+  // Valeur par défaut si pas d'utilisateur connecté
+  const defaultUser: User = {
+    username: 'guest',
+    role: 'Guest',
+    displayName: 'Invité'
+  };
+
+  // Utilise l'utilisateur passé en prop ou l'utilisateur par défaut
+  const currentUser = user || defaultUser;
 
   const getRoleBadgeColor = (role: string) => {
     if (role === 'Admin') return 'bg-red-500/10 text-red-400 border-red-500/20';
@@ -83,13 +93,13 @@ export default function Header({ user }: HeaderProps) {
             {/* User Menu */}
             <div className="flex items-center space-x-3 pl-4 border-l border-slate-800">
               <div className="text-right">
-                <p className="text-xs font-bold text-white">{user.displayName}</p>
-                <div className={`inline-block px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${getRoleBadgeColor(user.role)}`}>
-                  {user.role}
+                <p className="text-xs font-bold text-white">{currentUser.displayName}</p>
+                <div className={`inline-block px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${getRoleBadgeColor(currentUser.role)}`}>
+                  {currentUser.role}
                 </div>
               </div>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                <span className="text-sm font-bold text-white">{getUserInitials(user.displayName)}</span>
+                <span className="text-sm font-bold text-white">{getUserInitials(currentUser.displayName)}</span>
               </div>
             </div>
           </nav>
