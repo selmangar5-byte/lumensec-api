@@ -66,7 +66,13 @@ export default function App() {
           )}
           
           {currentView === 'insurance' && <InsuranceQuestionnaire onNavigate={setCurrentView} />}
-          {currentView === 'insurance-dashboard' && <InsuranceDashboard />}
+          {currentView === 'insurance-dashboard' && (
+  <InsuranceDashboard 
+    user={user} 
+    onStartAssessment={() => setCurrentView('insurance')}
+    onNavigate={setCurrentView}
+  />
+)}
           {currentView === 'report' && <ReportModal onClose={() => setCurrentView('dashboard')} />}
           {currentView === 'template-preview' && (
             <TemplatePreviewPage 
