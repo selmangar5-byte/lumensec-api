@@ -17,8 +17,10 @@ interface DashboardProps {
   onSelectIncident: (id: string) => void;
   onOpenTemplatePreview?: (templateType: string) => void;
   onNavigate?: (view: 'insurance' | 'insurance-dashboard' | 'report') => void;
-  reopenLoi25Modal?: boolean; // AJOUTÉ
-  onLoi25ModalReopened?: () => void; // AJOUTÉ
+  reopenLoi25Modal?: boolean;
+  onLoi25ModalReopened?: () => void;
+  currentView?: string;
+  onViewChange?: (view: 'dashboard' | 'insurance' | 'insurance-dashboard' | 'report' | 'template-preview') => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ 
@@ -26,25 +28,22 @@ const Dashboard: React.FC<DashboardProps> = ({
   onSelectIncident, 
   onOpenTemplatePreview, 
   onNavigate,
-  reopenLoi25Modal, // AJOUTÉ
-  onLoi25ModalReopened // AJOUTÉ
+  reopenLoi25Modal,
+  onLoi25ModalReopened,
+  currentView,
+  onViewChange
 }) => {
   const [showLoi25Modal, setShowLoi25Modal] = useState(false);
   const [showSystemHealthModal, setShowSystemHealthModal] = useState(false);
 
-  // Détecte quand on revient d'un template et rouvre le modal via props (AJOUTÉ)
-    // Détecte quand on revient d'un template et rouvre le modal via props (AJOUTÉ)
+  // Détecte quand on revient d'un template et rouvre le modal via props
   useEffect(() => {
-    console.log('DEBUG Dashboard: reopenLoi25Modal =', reopenLoi25Modal);
     if (reopenLoi25Modal) {
-      console.log('DEBUG Dashboard: OUVERTURE DU MODAL!');
       setShowLoi25Modal(true);
-      onLoi25ModalReopened?.(); // Reset le flag dans App.tsx
+      onLoi25ModalReopened?.();
     }
   }, [reopenLoi25Modal, onLoi25ModalReopened]);
 
-  console.log('RENDER Dashboard - reopenLoi25Modal:', reopenLoi25Modal);
-  console.log('RENDER Dashboard - props reçues:', { reopenLoi25Modal, onLoi25ModalReopened: !!onLoi25ModalReopened });
   if (!stats) return <div className="text-white text-center p-10">Loading...</div>;
   
   const getSeverityLabel = (severity: number) => {
@@ -69,6 +68,55 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="space-y-12 animate-in fade-in zoom-in-95 duration-700">
+      {/* Navigation - Les 4 onglets posés sur la ligne */}
+      <div className="border-b-2 border-slate-700/50 relative">
+        <nav className="flex items-end space-x-1 px-1">
+          <button 
+            onClick={() => onViewChange?.('dashboard')} 
+            className={`px-8 py-3 rounded-t-lg text-base font-semibold transition-all relative top-[2px] ${
+              currentView === 'dashboard' 
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-500' 
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700'
+            }`}
+          >
+            SOC Dashboard
+          </button>
+          
+          <button 
+            onClick={() => onViewChange?.('report')} 
+            className={`px-8 py-3 rounded-t-lg text-base font-semibold transition-all relative top-[2px] ${
+              currentView === 'report' 
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-500' 
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700'
+            }`}
+          >
+            PDF Generator
+          </button>
+          
+          <button 
+            onClick={() => onViewChange?.('insurance-dashboard')} 
+            className={`px-8 py-3 rounded-t-lg text-base font-semibold transition-all relative top-[2px] ${
+              currentView === 'insurance-dashboard' 
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-500' 
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700'
+            }`}
+          >
+            Insurance Dashboard
+          </button>
+          
+          <button 
+            onClick={() => onViewChange?.('insurance')} 
+            className={`px-8 py-3 rounded-t-lg text-base font-semibold transition-all relative top-[2px] ${
+              currentView === 'insurance' 
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-500' 
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700'
+            }`}
+          >
+            New Assessment
+          </button>
+        </nav>
+      </div>
+
       <KPISection stats={stats} />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

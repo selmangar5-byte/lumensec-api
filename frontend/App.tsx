@@ -18,7 +18,7 @@ export default function App() {
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<'dashboard' | 'insurance' | 'insurance-dashboard' | 'report' | 'template-preview'>('dashboard');
   const [selectedTemplate, setSelectedTemplate] = useState('');
-  const [reopenLoi25Modal, setReopenLoi25Modal] = useState(false); // AJOUTÉ : pour rouvrir Loi25 au retour
+  const [reopenLoi25Modal, setReopenLoi25Modal] = useState(false);
 
   useEffect(() => {
     if (authenticated) {
@@ -58,8 +58,10 @@ export default function App() {
                 setCurrentView('template-preview');
               }}
               onNavigate={setCurrentView}
-              reopenLoi25Modal={reopenLoi25Modal} // AJOUTÉ
-              onLoi25ModalReopened={() => setReopenLoi25Modal(false)} // AJOUTÉ
+              currentView={currentView}
+              onViewChange={setCurrentView}
+              reopenLoi25Modal={reopenLoi25Modal}
+              onLoi25ModalReopened={() => setReopenLoi25Modal(false)}
             />
           )}
           
@@ -71,7 +73,7 @@ export default function App() {
               templateType={selectedTemplate} 
               onBack={() => {
                 setCurrentView('dashboard');
-                setReopenLoi25Modal(true); // AJOUTÉ : signale qu'il faut rouvrir Loi25
+                setReopenLoi25Modal(true);
               }} 
             />
           )}

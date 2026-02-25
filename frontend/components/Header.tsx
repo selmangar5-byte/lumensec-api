@@ -69,25 +69,7 @@ export default function Header({ user, currentView = 'dashboard', onViewChange, 
             </div>
           </div>
 
-          {/* Navigation - Les 4 onglets */}
-          <nav className="flex items-center space-x-2">
-            <button onClick={() => onViewChange?.('dashboard')} className={navButtonClass('dashboard')}>
-              SOC Dash
-            </button>
-            
-            <button onClick={() => onViewChange?.('report')} className={navButtonClass('report')}>
-              PDF Generator
-            </button>
-            
-            <button onClick={() => onViewChange?.('insurance-dashboard')} className={navButtonClass('insurance-dashboard')}>
-              Insurance Dash
-            </button>
-            
-            <button onClick={() => onViewChange?.('insurance')} className={navButtonClass('insurance')}>
-              New Assessment
-            </button>
-          </nav>
-
+        
           {/* User Menu */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center gap-2 bg-slate-900/50 rounded-lg p-1 border border-slate-800">
