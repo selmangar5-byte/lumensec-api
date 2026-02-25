@@ -2,10 +2,10 @@
 class ApplicationController < ActionController::API
   private
   def current_tenant_id
-    tenant_id = request.headers['X-Tenant-ID'].presence
-    raise ActionController::BadRequest unless tenant_id
-    tenant_id
-  end
+  tenant_id = request.headers['X-Tenant-ID'].presence || params[:tenant_id].presence
+  raise ActionController::BadRequest unless tenant_id
+  tenant_id
+end
   def tenant_scope
     Incident.where(tenant_id: current_tenant_id)
   end

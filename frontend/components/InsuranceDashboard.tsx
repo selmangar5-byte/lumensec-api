@@ -69,7 +69,7 @@ interface Alert {
 }
 
 interface InsuranceDashboardProps {
-  user: any;
+  user?: any;
   onStartAssessment?: () => void;
   onNavigate?: (view: 'insurance' | 'dashboard' | 'insurance-dashboard') => void;
 }
@@ -92,10 +92,18 @@ const MOCK_ALERTS: Alert[] = [
   { id: '4', type: 'document', severity: 'info', title: 'Nouvel assessment disponible', description: 'Vos données ont été mises à jour', date: '2024-02-25' },
 ];
 
+// KPIs par défaut quand pas d'assessment
+const DEFAULT_KPIS: KPI[] = [
+  { id: '1', name: 'Taux MFA', value: 0, target: 100, unit: '%', status: 'critical', trend: 'stable', icon: Lock },
+  { id: '2', name: 'Patching Endpoint', value: 0, target: 95, unit: '%', status: 'critical', trend: 'stable', icon: Server },
+  { id: '3', name: 'Protection Données', value: 0, target: 100, unit: '%', status: 'critical', trend: 'stable', icon: Database },
+  { id: '4', name: 'Conformité', value: 0, target: 100, unit: '%', status: 'critical', trend: 'stable', icon: Target },
+];
+
 export default function InsuranceDashboard({ user, onStartAssessment, onNavigate }: InsuranceDashboardProps) {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [kpis, setKpis] = useState<KPI[]>([]);
+  const [kpis, setKpis] = useState<KPI[]>(DEFAULT_KPIS);
   
   // Données dérivées des assessments réels
   const latestAssessment = assessments[0];
@@ -168,20 +176,31 @@ export default function InsuranceDashboard({ user, onStartAssessment, onNavigate
         },
       ];
       setKpis(mappedKpis);
+    } else {
+      setKpis(DEFAULT_KPIS);
     }
   }, [latestAssessment, previousAssessment]);
 
   const fetchAssessments = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/insurance_assessments?tenant_id=${user?.tenant_id || '1'}`);
+const tenantId=user?.tenant_id || '1';
+      const response = await fetch(`/api/insurance_assessments?tenant_id=${tenantId}`);
+      
+      if (!response.ok) {
+        console.log('API indisponible, mode démo activé');
+        setAssessments([]);
+        setLoading(false);
+        return;
+      }
+      
       const data = await response.json();
-      // Trier par date décroissante
       const sorted = (data.assessments || []).sort((a: Assessment, b: Assessment) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       setAssessments(sorted);
     } catch (error) {
       console.error('Failed to fetch assessments:', error);
+      setAssessments([]);
     } finally {
       setLoading(false);
     }
@@ -237,39 +256,6 @@ export default function InsuranceDashboard({ user, onStartAssessment, onNavigate
     );
   }
 
-  if (assessments.length === 0) {
-    return (
-      <div className="min-h-screen bg-slate-950 p-6">
-        <div className="max-w-6xl mx-auto">
-          <button 
-            onClick={handleBackToDashboard}
-            className="mb-6 flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft size={20} />
-            Retour au Dashboard
-          </button>
-          
-          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-12 text-center">
-            <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Shield className="w-8 h-8 text-slate-500" />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Aucun assessment encore</h3>
-            <p className="text-slate-500 mb-6 max-w-md mx-auto">
-              Complétez votre premier assessment pour voir votre score de readiness assurance et débloquer les recommandations personnalisées.
-            </p>
-            <button 
-              onClick={handleStartAssessment}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-all flex items-center gap-2 mx-auto"
-            >
-              <Plus size={20} />
-              Nouvel Assessment
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-slate-950 p-6 space-y-6">
       {/* Navigation retour */}
@@ -314,10 +300,12 @@ export default function InsuranceDashboard({ user, onStartAssessment, onNavigate
                 }`}>
                   {currentScore}%
                 </span>
-                <div className={`flex items-center ${trend === 'up' ? 'text-emerald-400' : 'text-red-400'}`}>
-                  {trend === 'up' ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
-                  <span className="text-sm font-bold ml-1">{Math.abs(scoreChange)}%</span>
-                </div>
+                {assessments.length > 1 && (
+                  <div className={`flex items-center ${trend === 'up' ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {trend === 'up' ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
+                    <span className="text-sm font-bold ml-1">{Math.abs(scoreChange)}%</span>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -556,24 +544,30 @@ export default function InsuranceDashboard({ user, onStartAssessment, onNavigate
               Évolution Score
             </h2>
             
-            <div className="relative h-32 flex items-end justify-between gap-2">
-              {[...assessments].reverse().slice(-6).map((assessment, index) => (
-                <div key={assessment.id} className="flex-1 flex flex-col items-center gap-2">
-                  <div className="relative w-full group">
-                    <div 
-                      className="bg-indigo-500/80 rounded-t transition-all hover:bg-indigo-400"
-                      style={{ height: `${(assessment.score / 100) * 80}px` }}
-                    />
-                    <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 px-2 py-1 rounded">
-                      {assessment.score}%
+            {assessments.length > 0 ? (
+              <div className="relative h-32 flex items-end justify-between gap-2">
+                {[...assessments].reverse().slice(-6).map((assessment, index) => (
+                  <div key={assessment.id} className="flex-1 flex flex-col items-center gap-2">
+                    <div className="relative w-full group">
+                      <div 
+                        className="bg-indigo-500/80 rounded-t transition-all hover:bg-indigo-400"
+                        style={{ height: `${(assessment.score / 100) * 80}px` }}
+                      />
+                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 px-2 py-1 rounded">
+                        {assessment.score}%
+                      </div>
                     </div>
+                    <span className="text-xs text-slate-500">
+                      {new Date(assessment.created_at).toLocaleDateString('fr-FR', { month: 'short' })}
+                    </span>
                   </div>
-                  <span className="text-xs text-slate-500">
-                    {new Date(assessment.created_at).toLocaleDateString('fr-FR', { month: 'short' })}
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="h-32 flex items-center justify-center text-slate-500 text-sm">
+                Aucune donnée disponible
+              </div>
+            )}
             
             {assessments.length > 1 && (
               <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between text-xs">
@@ -588,30 +582,45 @@ export default function InsuranceDashboard({ user, onStartAssessment, onNavigate
           {/* Historique assessments */}
           <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-6">
             <h2 className="text-lg font-bold text-white mb-4">Historique</h2>
-            <div className="space-y-3 max-h-64 overflow-y-auto">
-              {assessments.slice(0, 5).map((assessment) => (
-                <div key={assessment.id} className="p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-300">
-                      {new Date(assessment.created_at).toLocaleDateString('fr-FR')}
-                    </span>
-                    <span className={`text-xs px-2 py-0.5 rounded font-bold border ${getRiskLevelColor(assessment.risk_level)}`}>
-                      {assessment.risk_level}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-black text-white">{assessment.score}%</span>
-                    <div className="text-right text-xs text-slate-500">
-                      <div className="flex flex-col gap-1">
-                        {Object.entries(assessment.section_scores).slice(0, 2).map(([key, score]) => (
-                          <span key={key}>{key.split('_')[0]}: {score}%</span>
-                        ))}
+            {assessments.length > 0 ? (
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {assessments.slice(0, 5).map((assessment) => (
+                  <div key={assessment.id} className="p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-slate-300">
+                        {new Date(assessment.created_at).toLocaleDateString('fr-FR')}
+                      </span>
+                      <span className={`text-xs px-2 py-0.5 rounded font-bold border ${getRiskLevelColor(assessment.risk_level)}`}>
+                        {assessment.risk_level}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-black text-white">{assessment.score}%</span>
+                      <div className="text-right text-xs text-slate-500">
+                        <div className="flex flex-col gap-1">
+                          {Object.entries(assessment.section_scores).slice(0, 2).map(([key, score]) => (
+                            <span key={key}>{key.split('_')[0]}: {score}%</span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Shield className="w-6 h-6 text-slate-500" />
                 </div>
-              ))}
-            </div>
+                <p className="text-slate-500 text-sm mb-4">Aucun assessment encore</p>
+                <button 
+                  onClick={handleStartAssessment}
+                  className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded transition-all"
+                >
+                  Commencer le premier
+                </button>
+              </div>
+            )}
           </div>
           
           {/* Actions rapides basées sur le dernier assessment */}
@@ -620,24 +629,25 @@ export default function InsuranceDashboard({ user, onStartAssessment, onNavigate
               <AlertTriangle size={18} />
               Actions Prioritaires
             </h3>
-            <div className="space-y-2">
-              {latestAssessment && Object.entries(latestAssessment.section_scores)
-                .filter(([_, score]) => score < 80)
-                .slice(0, 3)
-                .map(([key, score], idx) => (
-                  <div key={key} className="flex items-center justify-between text-sm">
-                    <span className="text-slate-300 capitalize">{key.replace(/_/g, ' ')}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded ${score < 60 ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white'}`}>
-                      {score}%
-                    </span>
-                  </div>
-                ))}
-              {(!latestAssessment || Object.values(latestAssessment.section_scores).every(s => s >= 80)) && (
-                <div className="text-sm text-emerald-400 text-center py-2">
-                  Tous les indicateurs sont bons !
-                </div>
-              )}
-            </div>
+            {latestAssessment ? (
+              <div className="space-y-2">
+                {Object.entries(latestAssessment.section_scores)
+                  .filter(([_, score]) => score < 80)
+                  .slice(0, 3)
+                  .map(([key, score]) => (
+                    <div key={key} className="flex items-center justify-between text-sm">
+                      <span className="text-slate-300 capitalize">{key.replace(/_/g, ' ')}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded ${score < 60 ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white'}`}>
+                        {score}%
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <div className="text-sm text-slate-400">
+                Complétez un assessment pour voir vos priorités
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -646,7 +656,7 @@ export default function InsuranceDashboard({ user, onStartAssessment, onNavigate
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-800">
         <div className="text-center">
           <div className="text-2xl font-black text-white">
-            {(assessments.reduce((acc, a) => acc + a.score, 0) / assessments.length / 20).toFixed(1)}/5
+            {assessments.length > 0 ? (assessments.reduce((acc, a) => acc + a.score, 0) / assessments.length / 20).toFixed(1) : '0.0'}/5
           </div>
           <div className="text-xs text-slate-500">Maturité cyber moyenne</div>
         </div>

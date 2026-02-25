@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://symmetrical-system-wrpwxpjr57qx29wjr-3000.app.github.dev',
         changeOrigin: true,
         secure: false,
       },

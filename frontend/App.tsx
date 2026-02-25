@@ -68,7 +68,7 @@ export default function App() {
           {currentView === 'insurance' && <InsuranceQuestionnaire onNavigate={setCurrentView} />}
           {currentView === 'insurance-dashboard' && (
   <InsuranceDashboard 
-    user={user} 
+    user={null} 
     onStartAssessment={() => setCurrentView('insurance')}
     onNavigate={setCurrentView}
   />
