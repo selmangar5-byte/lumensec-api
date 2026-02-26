@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_22_153845) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_26_165252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,6 +66,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_22_153845) do
     t.jsonb "answers"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "section_scores"
+    t.jsonb "gaps"
+    t.jsonb "recommendations"
+    t.string "premium_impact"
+    t.string "status"
     t.index ["tenant_id"], name: "index_insurance_assessments_on_tenant_id"
   end
 

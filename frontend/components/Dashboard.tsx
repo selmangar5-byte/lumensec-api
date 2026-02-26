@@ -11,6 +11,13 @@ import SystemHealthModal from './SystemHealthModal';
 import M365Alerts from './M365Alerts';
 import M365Config from './M365Config';
 import RansomwareWedge from './RansomwareWedge';
+import { 
+  RansomwareResistanceIndex, 
+  InsuranceReadinessScore, 
+  MTTCRansomware,
+  BackupImmutabilityStatus,
+  EmployeeTraining 
+} from './kpis';
 
 interface DashboardProps {
   stats: DashboardStats;
@@ -35,8 +42,8 @@ const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const [showLoi25Modal, setShowLoi25Modal] = useState(false);
   const [showSystemHealthModal, setShowSystemHealthModal] = useState(false);
+  const [demoScenario, setDemoScenario] = useState<'red' | 'green'>('red');
 
-  // Détecte quand on revient d'un template et rouvre le modal via props
   useEffect(() => {
     if (reopenLoi25Modal) {
       setShowLoi25Modal(true);
@@ -66,9 +73,71 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const threatLevel = Math.min(100, (stats.total_incidents * 15) + ((stats.by_severity?.["5"] || 0) * 20));
 
+  // 🔴 SCÉNARIO ROUGE : PME à risque (avant LumenSec)
+  const redData = {
+    ransomware: {
+      score: 58,
+      components: { mfa: 45, edr: 60, segmentation: 55, patchManagement: 72 }
+    },
+    insurance: {
+      grade: 'C' as const,
+      impact: 35,
+      details: { mttc: 120, backups: 40, mfa: 45, formation: 30 }
+    },
+    mttc: {
+      minutes: 120,
+      trend: 'degrading' as const,
+      previousMinutes: 85
+    },
+    backups: {
+      lastTestDays: 45,
+      coverage: 40,
+      totalBackups: 10,
+      immutableCount: 4
+    },
+    training: {
+      completionRate: 30,
+      phishingClicks: 12,
+      totalEmployees: 50,
+      trainedEmployees: 15
+    }
+  };
+
+  // 🟢 SCÉNARIO VERT : Entreprise mature (après LumenSec)
+  const greenData = {
+    ransomware: {
+      score: 94,
+      components: { mfa: 98, edr: 95, segmentation: 90, patchManagement: 93 }
+    },
+    insurance: {
+      grade: 'A+' as const,
+      impact: -25,
+      details: { mttc: 8, backups: 98, mfa: 98, formation: 95 }
+    },
+    mttc: {
+      minutes: 8,
+      trend: 'improving' as const,
+      previousMinutes: 12
+    },
+    backups: {
+      lastTestDays: 1,
+      coverage: 98,
+      totalBackups: 20,
+      immutableCount: 20
+    },
+    training: {
+      completionRate: 95,
+      phishingClicks: 0,
+      totalEmployees: 80,
+      trainedEmployees: 76
+    }
+  };
+
+  const kpiData = demoScenario === 'red' ? redData : greenData;
+
   return (
     <div className="space-y-12 animate-in fade-in zoom-in-95 duration-700">
-      {/* Navigation - Les 4 onglets posés sur la ligne */}
+      {/* Navigation */}
       <div className="border-b-2 border-slate-700/50 relative">
         <nav className="flex items-end space-x-1 px-1">
           <button 
@@ -117,11 +186,62 @@ const Dashboard: React.FC<DashboardProps> = ({
         </nav>
       </div>
 
-      <KPISection stats={stats} />
+      {/* 🎯 SECTION KPIs AVEC TOGGLE */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between px-1 mb-4">
+          <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <span className="w-1.5 h-4 bg-indigo-500 rounded-full"></span>
+            Indicateurs Critiques
+          </h2>
+          
+          <button
+            onClick={() => setDemoScenario(demoScenario === 'red' ? 'green' : 'red')}
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all border ${
+              demoScenario === 'red' 
+                ? 'bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30' 
+                : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30'
+            }`}
+          >
+            {demoScenario === 'red' ? '🔴 Scénario: PME à Risque → Passer au Vert' : '🟢 Scénario: Optimal → Retour au Rouge'}
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <RansomwareResistanceIndex 
+            score={kpiData.ransomware.score}
+            components={kpiData.ransomware.components}
+          />
+          
+          <InsuranceReadinessScore 
+            grade={kpiData.insurance.grade}
+            impact={kpiData.insurance.impact}
+            details={kpiData.insurance.details}
+          />
+          
+          <MTTCRansomware 
+            minutes={kpiData.mttc.minutes}
+            trend={kpiData.mttc.trend}
+            previousMinutes={kpiData.mttc.previousMinutes}
+          />
+          
+          <BackupImmutabilityStatus 
+            lastTestDays={kpiData.backups.lastTestDays}
+            coverage={kpiData.backups.coverage}
+            totalBackups={kpiData.backups.totalBackups}
+            immutableCount={kpiData.backups.immutableCount}
+          />
+          
+          <EmployeeTraining 
+            completionRate={kpiData.training.completionRate}
+            phishingClicks={kpiData.training.phishingClicks}
+            totalEmployees={kpiData.training.totalEmployees}
+            trainedEmployees={kpiData.training.trainedEmployees}
+          />
+        </div>
+      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-7 space-y-8">
-          {/* Section Ingestion Master Radar */}
           <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl relative group/table">
             <div className="px-10 py-8 border-b border-slate-800/50 flex justify-between items-center bg-slate-900/40">
               <div>
@@ -190,7 +310,6 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         <div className="lg:col-span-5 space-y-8">
-          {/* Loi 25 Compliance - Clickable */}
           <div 
             onClick={() => setShowLoi25Modal(true)}
             className="bg-gradient-to-br from-indigo-900/40 to-slate-900 border border-indigo-500/30 p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group cursor-pointer hover:border-indigo-400/50 hover:shadow-indigo-500/20 hover:-translate-y-1 transition-all duration-300"
@@ -213,12 +332,10 @@ const Dashboard: React.FC<DashboardProps> = ({
             </p>
           </div>
 
-          {/* System Health - Clickable wrapper */}
           <div onClick={() => setShowSystemHealthModal(true)} className="cursor-pointer">
             <SystemHealth />
           </div>
 
-          {/* Ransomware Wedge */}
           <RansomwareWedge />
           
           <ReportCenter />
@@ -229,7 +346,6 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
-      {/* Modals - Loi25Modal avec la prop onOpenTemplatePreview */}
       {showLoi25Modal && (
         <Loi25Modal 
           onClose={() => setShowLoi25Modal(false)} 

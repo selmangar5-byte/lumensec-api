@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface QuestionnaireAnswers {
   mfa: string;
@@ -40,6 +40,7 @@ interface AssessmentResult {
     compliance: number;
   };
   gaps: string[];
+  recommendations: string[];
 }
 
 interface InsuranceQuestionnaireProps {
@@ -116,6 +117,149 @@ const SECTIONS = [
   }
 ];
 
+// 🎯 FONCTION DE CALCUL DE SCORE INTELLIGENTE
+const calculateAnswerScore = (questionKey: string, answer: string): number => {
+  const scoringMap: Record<string, Record<string, number>> = {
+    // Binary / Yes-No
+    mfa: { Yes: 100, Partial: 50, No: 0 },
+    offsite_backup: { Yes: 100, No: 0 },
+    immutable_backups: { Yes: 100, No: 0, 'Dont know': 25 },
+    conditional_access: { Yes: 100, No: 0, 'Dont know': 25 },
+    
+    // SSO & PAM
+    sso: { Yes: 100, 'In progress': 50, No: 0 },
+    pam: { Yes: 100, Planned: 25, No: 0 },
+    
+    // Backup frequency (Daily = meilleur)
+    backups: { Daily: 100, Weekly: 75, Monthly: 40, Never: 0 },
+    backup_tested: { Monthly: 100, Quarterly: 80, Yearly: 40, Never: 0 },
+    
+    // EDR Coverage
+    edr_coverage: { '100%': 100, '80-99%': 80, '50-79%': 50, '<50%': 20 },
+    
+    // Patching (plus c'est rapide mieux c'est)
+    patching: { '<7 days': 100, '<30 days': 80, '<90 days': 40, '>90 days': 10 },
+    
+    // Encryption
+    endpoint_encryption: { 'Full disk': 100, Partial: 50, None: 0 },
+    
+    // USB Controls
+    usb_controls: { Blocked: 100, Monitored: 60, 'No control': 0 },
+    
+    // Firewall
+    firewall: { Yes: 100, 'Traditional firewall only': 50, No: 0 },
+    
+    // Segmentation
+    network_segmentation: { Full: 100, Partial: 60, None: 0 },
+    
+    // VPN
+    vpn: { Required: 100, Optional: 50, None: 0 },
+    
+    // Monitoring
+    network_monitoring: { '24/7': 100, 'Business hours': 60, 'No monitoring': 0 },
+    
+    // IR Plan
+    ir_plan: { Yes: 100, Outdated: 40, No: 0 },
+    ir_tested: { '<6 months': 100, '<12 months': 80, '>12 months': 40, Never: 0 },
+    
+    // Insurance
+    cyber_insurance: { Yes: 100, Expired: 20, No: 0 },
+    tabletop: { Quarterly: 100, Yearly: 80, Never: 0 },
+    
+    // Compliance
+    loi25: { Yes: 100, 'In progress': 60, No: 0 },
+    security_policies: { Yes: 100, Outdated: 40, No: 0 },
+    training: { Mandatory: 100, Optional: 60, None: 0 },
+    third_party_audits: { Annual: 100, Biannual: 60, Never: 0 }
+  };
+
+  return scoringMap[questionKey]?.[answer] ?? 50; // Default 50 si inconnu
+};
+
+const calculateMockResult = (answers: Partial<QuestionnaireAnswers>): AssessmentResult => {
+  let totalScore = 0;
+  let maxPossible = 0;
+  const sectionScores = {
+    identity: 0,
+    data_protection: 0,
+    endpoint: 0,
+    network: 0,
+    incident_response: 0,
+    compliance: 0
+  };
+  
+  const gaps: string[] = [];
+  const recommendations: string[] = [];
+
+  SECTIONS.forEach(section => {
+    let sectionTotal = 0;
+    let sectionCount = 0;
+    
+    section.questions.forEach(q => {
+      const answer = answers[q.key as keyof QuestionnaireAnswers];
+      if (answer) {
+        const score = calculateAnswerScore(q.key, answer);
+        sectionTotal += score;
+        sectionCount++;
+        
+        // Détection des gaps critiques
+        if (score < 50) {
+          if (q.key === 'mfa' && answer === 'No') gaps.push('MFA not deployed (critical)');
+          if (q.key === 'backups' && answer === 'Never') gaps.push('No backup strategy');
+          if (q.key === 'edr_coverage' && (answer === '<50%' || answer === '50-79%')) gaps.push('Insufficient EDR coverage');
+          if (q.key === 'patching' && (answer === '>90 days' || answer === '<90 days')) gaps.push('Patching delays');
+          if (q.key === 'loi25' && answer === 'No') gaps.push('Non-compliance Loi 25');
+        }
+      }
+    });
+    
+    const sectionAverage = sectionCount > 0 ? (sectionTotal / sectionCount) : 0;
+    const weightedScore = (sectionAverage * section.weight) / 100;
+    
+    sectionScores[section.title.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_') as keyof typeof sectionScores] = Math.round(sectionAverage);
+    totalScore += weightedScore;
+    maxPossible += section.weight;
+  });
+
+  // Normalisation sur 100
+  const finalScore = maxPossible > 0 ? Math.round((totalScore / maxPossible) * 100) : 0;
+  
+  // Détermination du niveau de risque
+  let riskLevel = 'HIGH';
+  let premiumImpact = '+35%';
+  
+  if (finalScore >= 85) {
+    riskLevel = 'LOW';
+    premiumImpact = '-25%';
+  } else if (finalScore >= 70) {
+    riskLevel = 'MEDIUM';
+    premiumImpact = '-5%';
+  } else if (finalScore >= 50) {
+    riskLevel = 'ELEVATED';
+    premiumImpact = '+15%';
+  }
+
+  // Recommandations basées sur les gaps
+  if (gaps.length === 0) {
+    recommendations.push('Maintain current security posture');
+    recommendations.push('Consider advanced threat hunting');
+  } else {
+    if (gaps.some(g => g.includes('MFA'))) recommendations.push('Deploy MFA immediately (highest ROI)');
+    if (gaps.some(g => g.includes('backup'))) recommendations.push('Implement 3-2-1 backup strategy');
+    if (gaps.some(g => g.includes('EDR'))) recommendations.push('Extend EDR coverage to all endpoints');
+    if (gaps.some(g => g.includes('Loi 25'))) recommendations.push('Start Loi 25 compliance documentation');
+  }
+
+  return {
+    score: finalScore,
+    risk_level: riskLevel,
+    premium_impact: premiumImpact,
+    section_scores: sectionScores,
+    gaps: gaps.length > 0 ? gaps : ['No critical gaps identified'],
+    recommendations
+  };
+};
+
 export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQuestionnaireProps) {
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState<Partial<QuestionnaireAnswers>>({});
@@ -123,12 +267,45 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // 💾 SAUVEGARDE AUTO DANS LOCALSTORAGE
+  useEffect(() => {
+    // Chargement au démarrage
+    const saved = localStorage.getItem('insurance_assessment_draft');
+    const savedSection = localStorage.getItem('insurance_assessment_section');
+    
+    if (saved) {
+      try {
+        setAnswers(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load saved answers');
+      }
+    }
+    if (savedSection) {
+      setCurrentSection(parseInt(savedSection, 10));
+    }
+    setIsLoading(false);
+  }, []);
+
+  // Sauvegarde à chaque changement
+  useEffect(() => {
+    if (!isLoading) {
+      localStorage.setItem('insurance_assessment_draft', JSON.stringify(answers));
+      localStorage.setItem('insurance_assessment_section', currentSection.toString());
+    }
+  }, [answers, currentSection, isLoading]);
 
   const isCurrentSectionComplete = () => {
     const currentQuestions = SECTIONS[currentSection].questions;
     return currentQuestions.every(q => answers[q.key as keyof QuestionnaireAnswers]);
+  };
+
+  const isSectionComplete = (sectionIndex: number) => {
+    const section = SECTIONS[sectionIndex];
+    return section.questions.every(q => answers[q.key as keyof QuestionnaireAnswers]);
   };
 
   const isAllSectionsComplete = () => {
@@ -160,6 +337,11 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
     }
   };
 
+  const clearSavedProgress = () => {
+    localStorage.removeItem('insurance_assessment_draft');
+    localStorage.removeItem('insurance_assessment_section');
+  };
+
   const nextSection = () => {
     if (!isCurrentSectionComplete()) {
       setShowValidation(true);
@@ -184,6 +366,14 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
     }
   };
 
+  const jumpToSection = (index: number) => {
+    if (index <= currentSection || isSectionComplete(index - 1)) {
+      setCurrentSection(index);
+      setShowValidation(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleSubmit = async () => {
     if (!isAllSectionsComplete()) {
       setShowValidation(true);
@@ -195,6 +385,10 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
     setSubmitError(null);
     
     try {
+      // Calcul local intelligent
+      const mockResult = calculateMockResult(answers);
+      
+      // Tentative d'envoi au backend
       const response = await fetch('/api/insurance_assessments', {
         method: 'POST',
         headers: {
@@ -203,7 +397,8 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
         },
         body: JSON.stringify({ 
           answers,
-          tenant_id: user?.tenant_id || '1'
+          tenant_id: user?.tenant_id || '1',
+          calculated_score: mockResult.score
         })
       });
 
@@ -214,32 +409,19 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
       const data = await response.json();
       if (data.success) {
         setResult(data.assessment);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        clearSavedProgress(); // On efface la sauvegarde après succès
       } else {
         throw new Error(data.error || 'Submission failed');
       }
     } catch (error) {
       console.error('Assessment submission failed:', error);
-      setSubmitError("Erreur lors de la soumission. Veuillez réessayer.");
-      
-      const mockResult: AssessmentResult = {
-        score: Math.round((Object.keys(answers).length / 24) * 100),
-        risk_level: Object.keys(answers).length > 18 ? 'LOW' : Object.keys(answers).length > 12 ? 'MEDIUM' : 'HIGH',
-        premium_impact: '-15%',
-        section_scores: {
-          identity: 85,
-          data_protection: 80,
-          endpoint: 75,
-          network: 70,
-          incident_response: 65,
-          compliance: 90
-        },
-        gaps: ['MFA not fully deployed', 'Backup testing infrequent']
-      };
+      // Utilise le calcul local en fallback
+      const mockResult = calculateMockResult(answers);
       setResult(mockResult);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      clearSavedProgress();
     } finally {
       setIsSubmitting(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -249,13 +431,21 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
     setAnswers({});
     setShowValidation(false);
     setSubmitError(null);
+    clearSavedProgress();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (isLoading) {
+    return (
+      <div className="bg-gray-900 min-h-screen flex items-center justify-center">
+        <div className="text-white">Chargement...</div>
+      </div>
+    );
+  }
 
   if (result) {
     return (
       <div className="bg-gray-900 min-h-screen p-8 relative">
-        {/* Bouton X en haut à droite pour fermer */}
         <button 
           onClick={() => onNavigate?.('dashboard')}
           className="absolute top-4 right-4 p-2 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white rounded-full transition-all border border-gray-700 hover:border-gray-500 z-10"
@@ -268,7 +458,11 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
 
         <div className="max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-xl p-8 border border-gray-700">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-500 mb-4">
+            <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 ${
+              result.score >= 85 ? 'bg-green-500' : 
+              result.score >= 70 ? 'bg-yellow-500' : 
+              result.score >= 50 ? 'bg-orange-500' : 'bg-red-500'
+            }`}>
               <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -280,19 +474,49 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-gray-700 p-6 rounded-lg border border-gray-600">
               <div className="text-sm text-gray-400 mb-1">Security Score</div>
-              <div className="text-4xl font-bold text-blue-400">{result.score}%</div>
+              <div className={`text-4xl font-bold ${
+                result.score >= 85 ? 'text-green-400' : 
+                result.score >= 70 ? 'text-yellow-400' : 
+                result.score >= 50 ? 'text-orange-400' : 'text-red-400'
+              }`}>{result.score}%</div>
             </div>
             <div className="bg-gray-700 p-6 rounded-lg border border-gray-600">
               <div className="text-sm text-gray-400 mb-1">Risk Level</div>
               <div className={`text-2xl font-bold ${
                 result.risk_level === 'LOW' ? 'text-green-400' :
                 result.risk_level === 'MEDIUM' ? 'text-yellow-400' :
+                result.risk_level === 'ELEVATED' ? 'text-orange-400' :
                 'text-red-400'
               }`}>{result.risk_level}</div>
             </div>
             <div className="bg-gray-700 p-6 rounded-lg border border-gray-600">
               <div className="text-sm text-gray-400 mb-1">Premium Impact</div>
-              <div className="text-2xl font-bold text-purple-400">{result.premium_impact}</div>
+              <div className={`text-2xl font-bold ${
+                result.premium_impact.startsWith('-') ? 'text-green-400' : 'text-red-400'
+              }`}>{result.premium_impact}</div>
+            </div>
+          </div>
+
+          {/* Section Scores Detail */}
+          <div className="bg-gray-700 p-6 rounded-lg border border-gray-600 mb-8">
+            <h3 className="text-xl font-bold text-white mb-4">Detailed Scores by Category</h3>
+            <div className="space-y-3">
+              {Object.entries(result.section_scores).map(([key, score]) => (
+                <div key={key} className="flex items-center">
+                  <div className="w-48 text-sm text-gray-300 capitalize">{key.replace(/_/g, ' ')}</div>
+                  <div className="flex-1 mx-4">
+                    <div className="w-full bg-gray-600 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-1000 ${
+                          score >= 80 ? 'bg-green-500' : score >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}
+                        style={{ width: `${score}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div className="w-12 text-right font-bold text-white">{score}%</div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -300,11 +524,27 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
             <h3 className="text-xl font-bold text-white mb-4">Critical Gaps to Address</h3>
             <ul className="space-y-2">
               {result.gaps.map((gap, index) => (
-                <li key={index} className="flex items-center text-red-400">
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <li key={index} className={`flex items-center ${
+                  gap.includes('critical') ? 'text-red-400' : 'text-yellow-400'
+                }`}>
+                  <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                   {gap}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="bg-blue-900/30 p-6 rounded-lg border border-blue-500/30 mb-8">
+            <h3 className="text-xl font-bold text-blue-400 mb-4">Recommendations</h3>
+            <ul className="space-y-2">
+              {result.recommendations.map((rec, index) => (
+                <li key={index} className="flex items-center text-blue-300">
+                  <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  {rec}
                 </li>
               ))}
             </ul>
@@ -318,7 +558,6 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
               Start New Assessment
             </button>
             
-            {/* Nouveau bouton Return to Dashboard */}
             <button 
               onClick={() => onNavigate?.('dashboard')}
               className="w-full py-3 px-4 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition duration-200 border border-gray-600 hover:border-gray-500 flex items-center justify-center gap-2"
@@ -345,16 +584,57 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
   return (
     <div className="bg-gray-900 min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <div className="flex justify-between text-sm text-gray-400 mb-2">
-            <span>Section {currentSection + 1} of {SECTIONS.length}</span>
-            <span>{Math.round(progress)}% Complete</span>
+        {/* 🎯 INDICATEUR DE PROGRESSION PAR SECTION */}
+        <div className="mb-6 bg-gray-800 p-4 rounded-lg border border-gray-700">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-sm text-gray-400">Progression</span>
+            <button 
+              onClick={() => {
+                if (confirm('Effacer toutes les réponses et recommencer ?')) {
+                  handleStartNewAssessment();
+                }
+              }}
+              className="text-xs text-red-400 hover:text-red-300 underline"
+            >
+              Réinitialiser
+            </button>
           </div>
-          <div className="w-full bg-gray-700 rounded-full h-2">
-            <div 
-              className="bg-blue-500 h-2 rounded-full transition-all duration-300" 
-              style={{ width: `${progress}%` }}
-            ></div>
+          <div className="flex justify-between gap-2">
+            {SECTIONS.map((s, idx) => {
+              const completed = isSectionComplete(idx);
+              const isCurrent = idx === currentSection;
+              const isAccessible = idx <= currentSection || (idx > 0 && isSectionComplete(idx - 1));
+              
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => jumpToSection(idx)}
+                  disabled={!isAccessible}
+                  className={`flex-1 py-2 px-1 rounded text-xs font-medium transition-all ${
+                    completed 
+                      ? 'bg-green-600 text-white' 
+                      : isCurrent 
+                        ? 'bg-blue-600 text-white' 
+                        : isAccessible 
+                          ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                          : 'bg-gray-800 text-gray-600 cursor-not-allowed'
+                  }`}
+                  title={s.title}
+                >
+                  <div className="flex flex-col items-center">
+                    <span className="mb-1">{idx + 1}</span>
+                    {completed && (
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-2 text-center text-xs text-gray-500">
+            {SECTIONS.filter((_, idx) => isSectionComplete(idx)).length} / {SECTIONS.length} sections complétées
           </div>
         </div>
 
