@@ -8,7 +8,11 @@ Rails.application.routes.draw do
   # M365 (ANCIEN - conservé pour compatibilité)
   get '/m365/alerts', to: 'm365#alerts'
   get '/m365/credentials', to: 'm365#credentials'
-
+# Microsoft OAuth
+get '/api/auth/microsoft', to: 'api/oauth#microsoft_auth'
+get '/api/auth/microsoft/callback', to: 'api/oauth#microsoft_callback'
+post '/api/m365/:tenant_id/scan', to: 'api/m365_credentials#trigger_scan'
+get '/api/m365/:tenant_id/scan-status', to: 'api/m365_credentials#scan_status'
   # Analyse IA (ANCIEN)
   post '/alerts/:id/analyze', to: 'alerts#analyze'
   
