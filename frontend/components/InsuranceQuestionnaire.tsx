@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-
+import { ConnectMicrosoftButton } from './ConnectMicrosoftButton';
 interface QuestionnaireAnswers {
   mfa: string;
   sso: string;
@@ -584,6 +584,18 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
   return (
     <div className="bg-gray-900 min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
+         {/* 🔌 CONNECT MICROSOFT 365 */}
+      <ConnectMicrosoftButton 
+        tenantId={user?.tenant_id || 'default'} 
+        onConnected={(data) => {
+          console.log('M365 Connected:', data);
+          // Optionnel: auto-remplir certaines réponses si données disponibles
+          if (data?.scan?.mfa?.mfa_percentage === 100) {
+            handleAnswer('mfa', 'Yes');
+          }
+        }}
+        onError={(error) => console.error('Connection error:', error)}
+      />     
         {/* 🎯 INDICATEUR DE PROGRESSION PAR SECTION */}
         <div className="mb-6 bg-gray-800 p-4 rounded-lg border border-gray-700">
           <div className="flex justify-between items-center mb-4">
