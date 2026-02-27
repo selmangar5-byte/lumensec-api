@@ -10,6 +10,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [error, setError] = useState('');
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [m365Success, setM365Success] = useState(false);
 
   const users = [
     { 
@@ -40,8 +41,15 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   ];
 
   useEffect(() => {
-    console.log("LUMENSEC // BOOT SEQUENCE INITIALIZED");
-  }, []);
+  console.log("LUMENSEC // BOOT SEQUENCE INITIALIZED");
+  // Détection connexion Microsoft réussie
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('m365_connected') === 'true') {
+    setM365Success(true);
+    // Nettoie l'URL (supprime les paramètres pour éviter la boucle)
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+}, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,7 +98,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       <div className="absolute inset-0 bg-grid opacity-10"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950 opacity-80"></div>
       
-      <div className={`relative w-full max-w-md p-10 bg-slate-900/40 backdrop-blur-3xl border ${error ? 'border-red-500/50 shadow-[0_0_50px_rgba(239,68,68,0.1)]' : 'border-slate-800 shadow-2xl'} rounded-[3rem] text-center transition-all duration-500 ${error ? 'animate-shake' : ''}`}>
+      <div className={`relative w-full max-w-md p-10 bg-slate-900/40 backdrop-blur-3xl border ${error ? 'border-red-500/50 shadow-[0_0_50px_rgba(239,68,68,0.1)]' : m365Success ? 'border-emerald-500/50 shadow-[0_0_50px_rgba(16,185,129,0.1)]' : 'border-slate-800 shadow-2xl'} rounded-[3rem] text-center transition-all duration-500 ${error ? 'animate-shake' : ''}`}>
         
         <style>{`
           @keyframes shake {
@@ -106,10 +114,24 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         <div className="mb-10 inline-flex items-center justify-center w-24 h-24 bg-slate-950 border border-slate-800 rounded-3xl relative group">
           <div className="absolute inset-0 bg-indigo-500/10 blur-xl group-hover:bg-indigo-500/20 transition-all rounded-full"></div>
           <span className="text-4xl font-black text-white italic relative z-10 tracking-tighter">L</span>
-          <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full border-4 border-slate-950 shadow-lg"></div>
+          <div className={`absolute -bottom-2 -right-2 w-6 h-6 rounded-full border-4 border-slate-950 shadow-lg ${m365Success ? 'bg-emerald-500' : 'bg-emerald-500'}`}></div>
         </div>
 
         <h1 className="text-2xl font-black text-white tracking-tighter uppercase italic mb-2">SOC Access Portal</h1>
+        
+        {/* Message de succès Microsoft */}
+        {m365Success && (
+          <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
+            <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+              </svg>
+              Microsoft 365 Connected
+            </p>
+            <p className="text-emerald-500/70 text-[10px] mt-1">Select a user to continue</p>
+          </div>
+        )}
+
         <p className="text-[10px] text-slate-500 font-mono uppercase tracking-[0.4em] mb-10">
           {showPasswordInput ? 'Enter Admin Password' : 'Select User Role'}
         </p>

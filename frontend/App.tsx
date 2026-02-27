@@ -13,7 +13,10 @@ import { LanguageProvider } from './contexts/LanguageContext';
 
 export default function App() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [authenticated, setAuthenticated] = useState(false);
+  // Vérifie localStorage au démarrage pour persister la session
+  const [authenticated, setAuthenticated] = useState(() => {
+    return localStorage.getItem('isAuthenticated') === 'true';
+  });
   const [error, setError] = useState<string | null>(null);
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<'dashboard' | 'insurance' | 'insurance-dashboard' | 'report' | 'template-preview'>('dashboard');
@@ -35,8 +38,18 @@ export default function App() {
     }
   };
 
+  const handleLogin = () => {
+    localStorage.setItem('isAuthenticated', 'true');
+    setAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    setAuthenticated(false);
+  };
+
   if (!authenticated) {
-    return <Login onLogin={() => setAuthenticated(true)} />;
+    return <Login onLogin={handleLogin} />;
   }
 
   return (
@@ -45,7 +58,7 @@ export default function App() {
         <Header 
           currentView={currentView} 
           onViewChange={setCurrentView}
-          onLogout={() => setAuthenticated(false)}
+          onLogout={handleLogout}
         />
         
         <main className="container mx-auto p-6">
@@ -67,12 +80,12 @@ export default function App() {
           
           {currentView === 'insurance' && <InsuranceQuestionnaire onNavigate={setCurrentView} />}
           {currentView === 'insurance-dashboard' && (
-  <InsuranceDashboard 
-    user={null} 
-    onStartAssessment={() => setCurrentView('insurance')}
-    onNavigate={setCurrentView}
-  />
-)}
+            <InsuranceDashboard 
+              user={null} 
+              onStartAssessment={() => setCurrentView('insurance')}
+              onNavigate={setCurrentView}
+            />
+          )}
           {currentView === 'report' && <ReportModal onClose={() => setCurrentView('dashboard')} />}
           {currentView === 'template-preview' && (
             <TemplatePreviewPage 
