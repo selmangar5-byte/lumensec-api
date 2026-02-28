@@ -23,6 +23,20 @@ export default function App() {
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [reopenLoi25Modal, setReopenLoi25Modal] = useState(false);
 
+  // when the app first loads we may have been redirected from OAuth
+  // backend: /insurance?m365_connected=true or with an error query
+  // switch to the questionnaire page automatically so user sees the result
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (
+      params.get('m365_connected') === 'true' ||
+      window.location.pathname.includes('/insurance') ||
+      params.has('error')
+    ) {
+      setCurrentView('insurance');
+    }
+  }, []);
+
   useEffect(() => {
     if (authenticated) {
       loadStats();

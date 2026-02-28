@@ -1,6 +1,12 @@
 module Api
   class M365CredentialsController < ApplicationController
     skip_before_action :verify_authenticity_token, raise: false
+    before_action :set_cors_headers
+    
+    # Handle preflight OPTIONS requests
+    def options
+      render plain: '', status: :ok
+    end
     
     def show
       tenant_id = request.headers['X-Tenant-ID'] || 'default'
@@ -80,6 +86,13 @@ module Api
     
     def credential_params
       params.require(:m365_credential).permit(:client_id, :client_secret, :m365_tenant_id)
+    end
+
+    def set_cors_headers
+      response.headers['Access-Control-Allow-Origin'] = '*'
+      response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD'
+      response.headers['Access-Control-Allow-Headers'] = request.headers['Access-Control-Request-Headers'] || 'Content-Type, X-Tenant-ID'
+      response.headers['Access-Control-Expose-Headers'] = 'X-Tenant-ID'
     end
   end
 end

@@ -5,7 +5,7 @@ module Api
       tenant_id = params[:tenant_id] || request.headers['X-Tenant-ID'] || 'default'
       client_id = ENV['M365_CLIENT_ID'] || "c13fce9a-22a8-4307-88ec-c2b416f0b449"
       redirect_uri = ENV['M365_REDIRECT_URI'] || "https://symmetrical-system-wrpwxpjr57qx29wjr-3000.app.github.dev/api/auth/microsoft/callback"
-      scopes = "openid profile User.Read SecurityEvents.Read.All ThreatAssessment.Read.All"
+      scopes = "openid profile User.Read"
       
       state_payload = { tenant_id: tenant_id, nonce: SecureRandom.hex(16) }
       state = Base64.urlsafe_encode64(state_payload.to_json)
@@ -28,11 +28,11 @@ module Api
       tenant_id = extract_tenant_from_state(state) || 'default'
       
       if error
-        return redirect_to "#{frontend_url}/insurance?error=microsoft_auth_failed&details=#{CGI.escape(error)}", allow_other_host: true
+        return redirect_to "#{frontend_url}/new-assessment?error=microsoft_auth_failed&details=#{CGI.escape(error)}", allow_other_host: true
       end
       
       unless code
-        return redirect_to "#{frontend_url}/insurance?error=no_code_received", allow_other_host: true
+        return redirect_to "#{frontend_url}/new-assessment?error=no_code_received", allow_other_host: true
       end
       
       tokens = exchange_code_for_tokens(code)
@@ -58,13 +58,13 @@ module Api
         )
         
         if creds.save
-          redirect_to "#{frontend_url}/insurance?m365_connected=true&email=#{CGI.escape(user_info&.dig('mail') || '')}", allow_other_host: true
+          redirect_to "#{frontend_url}/new-assessment?m365_connected=true&email=#{CGI.escape(user_info&.dig('mail') || '')}", allow_other_host: true
         else
-          redirect_to "#{frontend_url}/insurance?error=save_failed", allow_other_host: true
+          redirect_to "#{frontend_url}/new-assessment?error=save_failed", allow_other_host: true
         end
       else
         error_msg = tokens&.dig('error_description') || tokens&.dig('error') || 'Unknown error'
-        redirect_to "#{frontend_url}/insurance?error=token_exchange_failed&details=#{CGI.escape(error_msg)}", allow_other_host: true
+        redirect_to "#{frontend_url}/new-assessment?error=token_exchange_failed&details=#{CGI.escape(error_msg)}", allow_other_host: true
       end
     end
     

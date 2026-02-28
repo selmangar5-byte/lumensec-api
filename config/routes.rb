@@ -18,6 +18,10 @@ get '/api/m365/:tenant_id/scan-status', to: 'api/m365_credentials#scan_status'
   
   # API Namespace (NOUVEAU - pour Insurance et futurs endpoints)
   namespace :api do
+    # M365 Credentials API (pour frontend)
+    get 'm365/credentials', to: 'm365_credentials#show'
+    options 'm365/credentials', to: 'm365_credentials#options'
+    
     # Insurance Assessments - CRITIQUE pour le module Insurance
     get 'insurance_assessments', to: 'insurance_assessments#index'
     post 'insurance_assessments', to: 'insurance_assessments#create'

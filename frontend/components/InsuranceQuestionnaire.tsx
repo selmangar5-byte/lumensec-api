@@ -263,6 +263,9 @@ const calculateMockResult = (answers: Partial<QuestionnaireAnswers>): Assessment
 export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQuestionnaireProps) {
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState<Partial<QuestionnaireAnswers>>({});
+  const [m365Loading, setM365Loading] = useState(true);
+  const [m365Error, setM365Error] = useState<string | null>(null);
+  const [m365Info, setM365Info] = useState<{ connected_by_email?: string; connected_by_name?: string } | null>(null);
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
@@ -289,6 +292,49 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
     }
     setIsLoading(false);
   }, []);
+
+  // Pré-remplir depuis Microsoft 365 si disponible
+  useEffect(() => {
+    let mounted = true;
+    const fetchM365 = async () => {
+      try {
+        setM365Loading(true);
+        setM365Error(null);
+        const resp = await fetch('https://symmetrical-system-wrpwxpjr57qx29wjr-3000.app.github.dev/api/m365/credentials', {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Tenant-ID': user?.tenant_id || '1'
+          },
+          credentials: 'omit'
+        });
+
+        if (!mounted) return;
+
+        if (resp.status === 404) {
+          setM365Error('Connectez-vous à Microsoft 365 pour pré-remplir ce formulaire');
+          setM365Loading(false);
+          return;
+        }
+
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status}`);
+        }
+
+        const data = await resp.json();
+        setM365Info(data);
+
+        // Pré-remplir quelques champs (utilise any pour éviter erreurs de type)
+        setAnswers(prev => ({ ...(prev as any), company_email: data.connected_by_email || (prev as any).company_email, responsible_name: data.connected_by_name || (prev as any).responsible_name }));
+      } catch (e) {
+        setM365Error('Connectez-vous à Microsoft 365 pour pré-remplir ce formulaire');
+      } finally {
+        setM365Loading(false);
+      }
+    };
+
+    fetchM365();
+    return () => { mounted = false; };
+  }, [user?.tenant_id]);
 
   // Sauvegarde à chaque changement
   useEffect(() => {
@@ -596,6 +642,15 @@ export default function InsuranceQuestionnaire({ user, onNavigate }: InsuranceQu
         }}
         onError={(error) => console.error('Connection error:', error)}
       />     
+        {m365Loading ? (
+          <div className="text-sm text-gray-400 mt-2">Pré-remplissage depuis Microsoft 365…</div>
+        ) : m365Error ? (
+          <div className="mt-3 mb-4 p-3 bg-yellow-500/10 text-yellow-300 border border-yellow-500/20 rounded">
+            {m365Error}
+          </div>
+        ) : m365Info ? (
+          <div className="mt-3 mb-4 text-sm text-green-300">Pré-rempli depuis Microsoft 365: {m365Info.connected_by_email || ''}</div>
+        ) : null}
         {/* 🎯 INDICATEUR DE PROGRESSION PAR SECTION */}
         <div className="mb-6 bg-gray-800 p-4 rounded-lg border border-gray-700">
           <div className="flex justify-between items-center mb-4">
