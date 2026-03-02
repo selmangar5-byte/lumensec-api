@@ -290,9 +290,8 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
   // 💾 SAUVEGARDE AUTO DANS LOCALSTORAGE
   useEffect(() => {
     // Chargement au démarrage
-    const skipLoad = window.location.search.includes('m365_connected=true');
-    const saved = skipLoad ? null : localStorage.getItem('insurance_assessment_draft');
-    const savedSection = skipLoad ? null : localStorage.getItem('insurance_assessment_section');
+    const saved = localStorage.getItem('insurance_assessment_draft');
+    const savedSection = localStorage.getItem('insurance_assessment_section');
     
     if (saved) {
       try {
@@ -307,94 +306,46 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
     setIsLoading(false);
   }, []);
 
-  // 🔍 Scan M365 pour pré-remplir automatiquement les réponses
+  // Pré-remplir depuis Microsoft 365 si disponible
   useEffect(() => {
     let mounted = true;
-    const scanM365 = async () => {
+    const fetchM365 = async () => {
       try {
         setM365Loading(true);
         setM365Error(null);
-        const baseUrl = window.location.origin.replace(":5173", ":3000");
-        
-        // 1. Vérifier la connexion existante
-        const credsResp = await fetch(`${baseUrl}/api/m365/credentials`, {
+        const resp = await fetch('https://symmetrical-system-wrpwxpjr57qx29wjr-3000.app.github.dev/api/m365/credentials', {
           headers: {
             'Content-Type': 'application/json',
-            'X-Tenant-ID': user?.tenant_id || 'default'
+            'X-Tenant-ID': user?.tenant_id || '1'
           },
           credentials: 'omit'
         });
-        
+
         if (!mounted) return;
-        
-        if (credsResp.status === 404) {
+
+        if (resp.status === 404) {
           setM365Error('Connectez-vous à Microsoft 365 pour pré-remplir ce formulaire');
           setM365Loading(false);
           return;
         }
-        
-        // 2. Lancer le scan de sécurité
-        const scanResp = await fetch(`${baseUrl}/api/m365_credentials/scan`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Tenant-ID': user?.tenant_id || 'default'
-          }
-        });
-        
-        if (!scanResp.ok) {
-          throw new Error(`Scan failed: ${scanResp.status}`);
+
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status}`);
         }
-        
-        const data = await scanResp.json();
-        
-        if (data.security_profile) {
-          const profile = data.security_profile;
-          
-          // Pré-remplir les réponses avec les données du scan
-          // Pré-remplir les réponses avec les données du scan
-          setAnswers(prev => ({
-            ...prev,
-            mfa: profile.mfa === "Dont know" ? "Partial" : profile.mfa || prev.mfa,
-            sso: profile.sso || prev.sso,
-            conditional_access: profile.conditional_access || prev.conditional_access,
-            pam: profile.pam || prev.pam,
-            security_policies: profile.security_policies || prev.security_policies,
-            backups: profile.backups || prev.backups,
-            offsite_backup: profile.offsite_backup || prev.offsite_backup,
-            backup_tested: profile.backup_tested || prev.backup_tested,
-            immutable_backups: profile.immutable_backups || prev.immutable_backups,
-            edr_coverage: profile.edr_coverage || prev.edr_coverage,
-            patching: profile.patching || prev.patching,
-            endpoint_encryption: profile.endpoint_encryption || prev.endpoint_encryption,
-            usb_controls: profile.usb_controls || prev.usb_controls,
-            firewall: profile.firewall || prev.firewall,
-            network_segmentation: profile.network_segmentation || prev.network_segmentation,
-            vpn: profile.vpn || prev.vpn,
-            network_monitoring: profile.network_monitoring || prev.network_monitoring,
-            ir_plan: profile.ir_plan || prev.ir_plan,
-            ir_tested: profile.ir_tested || prev.ir_tested,
-            cyber_insurance: profile.cyber_insurance || prev.cyber_insurance,
-            tabletop: profile.tabletop || prev.tabletop,
-            loi25: profile.loi25 || prev.loi25,
-            training: profile.training || prev.training,
-            third_party_audits: profile.third_party_audits || prev.third_party_audits,
-            company_email: data.connected_by_email || (prev as any).company_email,
-            responsible_name: data.connected_by_name || (prev as any).responsible_name
-          }));
-          setM365Info({
-            connected_by_email: data.connected_by_email,
-            connected_by_name: data.connected_by_name
-          });
-        }
+
+        const data = await resp.json();
+        setM365Info(data);
+
+        // Pré-remplir quelques champs (utilise any pour éviter erreurs de type)
+        setAnswers(prev => ({ ...(prev as any), company_email: data.connected_by_email || (prev as any).company_email, responsible_name: data.connected_by_name || (prev as any).responsible_name }));
       } catch (e) {
-        console.error('Erreur scan M365:', e);
         setM365Error('Connectez-vous à Microsoft 365 pour pré-remplir ce formulaire');
       } finally {
-        if (mounted) setM365Loading(false);
+        setM365Loading(false);
       }
     };
-    
-    scanM365();
+
+    fetchM365();
     return () => { mounted = false; };
   }, [user?.tenant_id]);
 
@@ -501,11 +452,11 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Tenant-ID': user?.tenant_id || 'default'
+          'X-Tenant-ID': user?.tenant_id || '1'
         },
         body: JSON.stringify({ 
           answers,
-          tenant_id: user?.tenant_id || 'default',
+          tenant_id: user?.tenant_id || '1',
           calculated_score: mockResult.score
         })
       });

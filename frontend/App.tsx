@@ -22,6 +22,8 @@ export default function App() {
   const [currentView, setCurrentView] = useState<'dashboard' | 'insurance' | 'insurance-dashboard' | 'report' | 'template-preview'>('dashboard');
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [reopenLoi25Modal, setReopenLoi25Modal] = useState(false);
+  const [m365Email, setM365Email] = useState<string>('');
+  const [m365Name, setM365Name] = useState<string>('');
 
   // when the app first loads we may have been redirected from OAuth
   // backend: /insurance?m365_connected=true or with an error query
@@ -34,6 +36,12 @@ export default function App() {
       params.has('error')
     ) {
       setCurrentView('insurance');
+      // Extract email and name from URL params
+      const email = params.get('email') || '';
+      const name = params.get('name') || '';
+      setM365Email(email);
+      console.log("DEBUG App - email:", email, "name:", name);
+      setM365Name(name);
     }
   }, []);
 
@@ -92,7 +100,7 @@ export default function App() {
             />
           )}
           
-          {currentView === 'insurance' && <InsuranceQuestionnaire onNavigate={setCurrentView} />}
+          {currentView === 'insurance' && <InsuranceQuestionnaire onNavigate={setCurrentView} m365Email={m365Email} m365Name={m365Name} />}
           {currentView === 'insurance-dashboard' && (
             <InsuranceDashboard 
               user={null} 

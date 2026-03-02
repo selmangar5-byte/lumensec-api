@@ -18,11 +18,63 @@ module Api
           client_id: creds.client_id,
           m365_tenant_id: creds.m365_tenant_id,
           active: creds.active,
-          last_sync: creds.last_sync_at
+          last_sync: creds.last_sync_at,
+          connected_by_email: creds.connected_by_email,
+          connected_by_name: creds.connected_by_name
         }
       else
         render json: { has_credentials: false }
       end
+    end
+    
+    # 🔍 NOUVEAU : Scan de sécurité M365 pour pré-remplir le questionnaire
+    def scan
+      tenant_id = request.headers['X-Tenant-ID'] || 'default'
+      creds = M365Credential.find_by(tenant_id: tenant_id)
+      
+      if creds.nil?
+        return render json: { 
+          error: "Aucune connexion M365 trouvée",
+          connected: false 
+        }, status: 404
+      end
+      
+      if creds.access_token.blank?
+        return render json: { 
+          error: "Token d'accès manquant, reconnectez-vous",
+          connected: false 
+        }, status: 400
+      end
+      
+      # Vérifier si le token n'est pas expiré (simple vérification, à améliorer si besoin)
+      if creds.expires_at && creds.expires_at < Time.current
+        return render json: {
+          error: "Token expiré, reconnectez-vous",
+          connected: false,
+          expired: true
+        }, status: 401
+      end
+      
+      # Lancer le scan
+      scanner = M365SecurityScanner.new(creds.access_token)
+      security_data = scanner.scan_all
+      
+      render json: {
+        connected: true,
+        connected_by_email: creds.connected_by_email,
+        connected_by_name: creds.connected_by_name,
+        security_profile: security_data,
+        scanned_at: Time.current.iso8601
+      }
+      
+    rescue => e
+      Rails.logger.error "M365 Scan Error: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      render json: { 
+        error: "Erreur lors du scan Microsoft",
+        details: e.message,
+        connected: false 
+      }, status: 500
     end
     
     def create

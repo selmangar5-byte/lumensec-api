@@ -58,14 +58,16 @@ module Api
         )
         
         if creds.save
-          redirect_to "#{frontend_url}/new-assessment?m365_connected=true&email=#{CGI.escape(user_info&.dig('mail') || '')}", allow_other_host: true
+          email = user_info&.dig('mail') || user_info&.dig('userPrincipalName') || ''
+          name = user_info&.dig('displayName') || ''
+          redirect_to "#{frontend_url}/new-assessment?m365_connected=true&email=#{CGI.escape(email)}&name=#{CGI.escape(name)}", allow_other_host: true
         else
           redirect_to "#{frontend_url}/new-assessment?error=save_failed", allow_other_host: true
         end
       else
         error_msg = tokens&.dig('error_description') || tokens&.dig('error') || 'Unknown error'
         redirect_to "#{frontend_url}/new-assessment?error=token_exchange_failed&details=#{CGI.escape(error_msg)}", allow_other_host: true
-      end
+      end 
     end
     
     private

@@ -1,4 +1,4 @@
-const API_URL = ''; // Vide car Vite proxy tout
+const API_URL = "https://symmetrical-system-wrpwxpjr57qx29wjr-3000.app.github.dev";
 
 class LumensecAPI {
   private baseUrl: string;
@@ -6,7 +6,7 @@ class LumensecAPI {
 
   constructor() {
     this.baseUrl = API_URL;
-    this.tenantId = localStorage.getItem('tenant_id') || '1';
+    this.tenantId = localStorage.getItem('tenant_id') || 'default';
   }
 
   private headers() {
@@ -34,7 +34,7 @@ class LumensecAPI {
   }
 
   async getM365Alerts() {
-    const response = await fetch(`${this.baseUrl}/m365/alerts`, {
+    const response = await fetch(`${this.baseUrl}/api/m365_alerts`, {
       headers: this.headers()
     });
     if (!response.ok) throw new Error('Erreur alerts M365');
@@ -42,7 +42,7 @@ class LumensecAPI {
   }
 
   async getM365Credentials() {
-    const response = await fetch(`${this.baseUrl}/m365/credentials`, {
+    const response = await fetch(`${this.baseUrl}/api/m365/credentials`, {
       headers: this.headers()
     });
     if (!response.ok) throw new Error('Erreur credentials');
@@ -50,7 +50,7 @@ class LumensecAPI {
   }
 
   async saveM365Credentials(credentials: any) {
-    const response = await fetch(`${this.baseUrl}/m365/credentials`, {
+    const response = await fetch(`${this.baseUrl}/api/m365/credentials`, {
       method: 'POST',
       headers: this.headers(),
       body: JSON.stringify(credentials)
@@ -60,7 +60,7 @@ class LumensecAPI {
   }
 
   async testM365Connection() {
-    const response = await fetch(`${this.baseUrl}/m365/test`, {
+    const response = await fetch(`${this.baseUrl}/api/m365_test`, {
       headers: this.headers()
     });
     if (!response.ok) throw new Error('Erreur test connexion');
@@ -68,7 +68,7 @@ class LumensecAPI {
   }
 
   async toggleM365Mode() {
-    const response = await fetch(`${this.baseUrl}/m365/toggle`, {
+    const response = await fetch(`${this.baseUrl}/api/m365_toggle`, {
       method: 'POST',
       headers: this.headers()
     });

@@ -22,13 +22,11 @@ interface ConnectMicrosoftButtonProps {
 
                             const checkExistingConnection = async () => {
                                 try {
-                                      const response = await lumensecAPI.get(`/api/m365_credentials`, {
-                                              headers: { 'X-Tenant-ID': tenantId }
-                                                    });
+                                      const data = await lumensecAPI.getM365Credentials();
                                                           
-                                                                if (response.data.has_credentials && response.data.active) {
+                                                                if (data.has_credentials && data.active) {
                                                                         setIsConnected(true);
-                                                                                setConnectionData(response.data);
+                                                                                setConnectionData(data);
                                                                                       }
                                                                                           } catch (error) {
                                                                                                 console.log('No existing M365 connection');
@@ -43,8 +41,7 @@ interface ConnectMicrosoftButtonProps {
 
                                                                                                                         const handleDisconnect = async () => {
                                                                                                                             try {
-                                                                                                                                  await lumensecAPI.delete(`/api/m365_credentials`, {
-                                                                                                                                          headers: { 'X-Tenant-ID': tenantId }
+                                                                                                                                  await fetch(`/api/m365_credentials`, { method: "DELETE",
                                                                                                                                                 });
                                                                                                                                                       setIsConnected(false);
                                                                                                                                                             setConnectionData(null);

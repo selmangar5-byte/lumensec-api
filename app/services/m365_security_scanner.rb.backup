@@ -1,0 +1,95 @@
+class M365SecurityScanner
+  def initialize(access_token)
+    @access_token = access_token
+    @graph_base = "https://graph.microsoft.com/v1.0"
+  end
+
+  def scan_all
+    {
+      mfa: check_mfa,
+      sso: check_sso,
+      conditional_access: check_conditional_access,
+      pam: check_pam,
+      security_policies: check_security_policies
+    }
+  end
+
+  private
+
+  def check_mfa
+    # Vérifie si MFA est activé pour les utilisateurs
+    response = make_request("/policies/authenticationMethodsPolicy")
+    return "Dont know" unless response.success?
+    
+    data = JSON.parse(response.body)
+    policies = data.dig('authenticationMethodConfigurations') || []
+    
+    # Si Microsoft Authenticator ou Phone est activé = MFA probablement actif
+    mfa_methods = policies.select { |p| p['state'] == 'enabled' && %w[microsoftAuthenticator voice].include?(p['id']) }
+    mfa_methods.any? ? "Yes" : "No"
+  rescue
+    "Dont know"
+  end
+
+  def check_conditional_access
+    # Vérifie les politiques Conditional Access
+    response = make_request("/identity/conditionalAccess/policies")
+    return "Dont know" unless response.success?
+    
+    data = JSON.parse(response.body)
+    policies = data.dig('value') || []
+    
+    # S'il y a des politiques actives
+    active_policies = policies.select { |p| p['state'] == 'enabled' }
+    active_policies.any? ? "Yes" : "No"
+  rescue
+    "Dont know"
+  end
+
+  def check_sso
+    # Vérifie si SSO est configuré (Enterprise Applications)
+    response = make_request("/applications?\$filter=signInAudience eq 'AzureADMyOrg'&\$top=1")
+    return "No" unless response.success?
+    
+    data = JSON.parse(response.body)
+    apps = data.dig('value') || []
+    apps.any? ? "Yes" : "No"
+  rescue
+    "No"
+  end
+
+  def check_pam
+    # Vérification simplifiée (PAM = Privileged Identity Management)
+    response = make_request("/privilegedAccess/azureResources/resources")
+    return "No" unless response.success?
+    
+    data = JSON.parse(response.body)
+    resources = data.dig('value') || []
+    resources.any? ? "Yes" : "No"
+  rescue
+    "No"
+  end
+
+  def check_security_policies
+    # Vérifie s'il y a des politiques de sécurité
+    response = make_request("/policies/identitySecurityDefaultsEnforcementPolicy")
+    return "No" unless response.success?
+    
+    data = JSON.parse(response.body)
+    data.dig('isEnabled') ? "Yes" : "No"
+  rescue
+    "No"
+  end
+
+  def make_request(endpoint)
+    uri = URI("#{@graph_base}#{endpoint}")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    
+    request = Net::HTTP::Get.new(uri)
+    request['Authorization'] = "Bearer #{@access_token}"
+    request['Content-Type'] = 'application/json'
+    
+    http.request(request)
+  end
+end
