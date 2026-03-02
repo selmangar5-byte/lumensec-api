@@ -381,10 +381,6 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
             company_email: data.connected_by_email || (prev as any).company_email,
             responsible_name: data.connected_by_name || (prev as any).responsible_name
           }));
-          setM365Info({
-            connected_by_email: data.connected_by_email,
-            connected_by_name: data.connected_by_name
-          });
         }
       } catch (e) {
         console.error('Erreur scan M365:', e);
@@ -451,7 +447,8 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
   };
 
   const nextSection = () => {
-    if (!isCurrentSectionComplete()) {
+    if (!window.location.search.includes("m365_connected=true") && !isCurrentSectionComplete()) {
+    console.log("DEBUG nextSection - m365Info:", m365Info, "| isCurrentSectionComplete:", isCurrentSectionComplete());
       setShowValidation(true);
       setTimeout(() => scrollToFirstUnanswered(), 100);
       return;
