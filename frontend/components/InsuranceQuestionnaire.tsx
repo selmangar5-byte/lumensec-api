@@ -494,7 +494,8 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
       const mockResult = calculateMockResult(answers);
       
       // Tentative d'envoi au backend
-      const response = await fetch('/api/insurance_assessments', {
+      const apiBase = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${apiBase}/api/insurance_assessments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
