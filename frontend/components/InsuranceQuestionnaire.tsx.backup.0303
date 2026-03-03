@@ -837,8 +837,8 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
             </button>
 
             <button
-              onClick={isLastSection ? handleSubmit : nextSection}
-              disabled={isSubmitting}
+              onClick={nextSection}
+              disabled={isSubmitting || (isLastSection && !allSectionsComplete)}
               className={`py-2 px-6 rounded-lg font-medium ${
                 showGreenButton
                   ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-500/30'

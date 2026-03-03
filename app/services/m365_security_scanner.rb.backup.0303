@@ -17,7 +17,7 @@ class M365SecurityScanner
       backups: check_backup_policy,
       offsite_backup: "Yes", # OneDrive = cloud = offsite
       backup_tested: check_backup_testing,
-      immutable_backups: check_immutable_backup,
+      immutable_backups: "Dont know",
       
       # Endpoint (NOUVEAU - partiel)
       endpoint_encryption: check_device_encryption,
@@ -33,7 +33,7 @@ class M365SecurityScanner
       
       # Incident Response (NOUVEAU - limité)
       ir_plan: "No", # Non visible
-      ir_tested: check_tabletop, # Non visible
+      ir_tested: "Never", # Non visible
       cyber_insurance: "No", # Non visible
       
       # Compliance (NOUVEAU)
@@ -126,9 +126,9 @@ class M365SecurityScanner
       return "Yearly"
     end
     
-    "Yearly"
+    "Dont know"
   rescue
-    "Yearly"
+    "Dont know"
   end
   def check_device_encryption
     response = make_request("/deviceManagement/deviceCompliancePolicies")
@@ -217,18 +217,5 @@ class M365SecurityScanner
     request['Authorization'] = "Bearer #{@access_token}"
     request['Content-Type'] = 'application/json'
     http.request(request)
-  end
-
-  def check_immutable_backup
-    "Partial (30+ days)"
-  end
-  
-  def check_tabletop
-    # Fallback: si des simulations de phishing existent = tests réguliers
-    response = make_request("/security/attackSimulation/simulations")
-    return "Quarterly" if response.success?
-    "Yearly" # Au moins test annuel implicite
-  rescue
-    "Yearly"
   end
 end
