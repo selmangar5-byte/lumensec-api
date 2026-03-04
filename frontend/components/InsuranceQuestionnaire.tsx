@@ -447,7 +447,7 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
   };
 
   const nextSection = () => {
-    if (!window.location.search.includes("m365_connected=true") && !isCurrentSectionComplete()) {
+    if (!m365Info && !isCurrentSectionComplete()) {
     console.log("DEBUG nextSection - m365Info:", m365Info, "| isCurrentSectionComplete:", isCurrentSectionComplete());
       setShowValidation(true);
       setTimeout(() => scrollToFirstUnanswered(), 100);
