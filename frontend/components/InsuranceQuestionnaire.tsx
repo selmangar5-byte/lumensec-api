@@ -413,8 +413,12 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
   };
 
   const isAllSectionsComplete = () => {
-    return SECTIONS.every(section => 
-      section.questions.every(q => answers[q.key as keyof QuestionnaireAnswers])
+    const incomplete = ["Dont know", "Partial", "Unknown"];
+    return SECTIONS.every(s => 
+      s.questions.every(q => {
+        const v = answers[q.key as keyof QuestionnaireAnswers];
+        return v && v.toString().trim() !== "" && !incomplete.includes(v);
+      })
     );
   };
 
@@ -513,7 +517,7 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
       }
 
       const data = await response.json();
-      if (data.success) {
+      if (data.success && isAllSectionsComplete()) {
         setResult(data.assessment);
         clearSavedProgress(); // On efface la sauvegarde après succès
       } else {
@@ -521,9 +525,11 @@ export default function InsuranceQuestionnaire({ user, onNavigate, m365Email, m3
       }
     } catch (error) {
       console.error('Assessment submission failed:', error);
-      // Utilise le calcul local en fallback
-      const mockResult = calculateMockResult(answers);
-      setResult(mockResult);
+      // Utilise le calcul local en fallback seulement si questionnaire complet
+      if (isAllSectionsComplete()) {
+        const mockResult = calculateMockResult(answers);
+        setResult(mockResult);
+      }
       clearSavedProgress();
     } finally {
       setIsSubmitting(false);
