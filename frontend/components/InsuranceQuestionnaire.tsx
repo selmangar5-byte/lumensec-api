@@ -54,7 +54,7 @@ const SECTIONS = [
   {
     id: 1,
     title: 'Identity & Access Management',
-    weight: 25,
+    weight: 20,
     questions: [
       { key: 'mfa', text: 'Multi-Factor Authentication (MFA) enabled on all accounts?', options: ['Yes', 'No', 'Partial'] },
       { key: 'sso', text: 'Single Sign-On (SSO) configured?', options: ['Yes', 'No', 'In progress'] },
@@ -87,7 +87,7 @@ const SECTIONS = [
   {
     id: 4,
     title: 'Network Security',
-    weight: 15,
+    weight: 10,
     questions: [
       { key: 'firewall', text: 'Next-generation firewall deployed?', options: ['Yes', 'No', 'Traditional firewall only'] },
       { key: 'network_segmentation', text: 'Network segmentation implemented?', options: ['Full', 'Partial', 'None'] },
@@ -116,6 +116,34 @@ const SECTIONS = [
       { key: 'training', text: 'Employee security awareness training?', options: ['Mandatory', 'Optional', 'None'] },
       { key: 'third_party_audits', text: 'Third-party security audits?', options: ['Annual', 'Biannual', 'Never'] }
     ]
+  },
+  {
+    id: 7,
+    title: 'Security Operations (SOC)',
+    weight: 10,
+    description: 'Capacites de detection et reponse SOC',
+    questions: [
+      { 
+        key: 'siem_coverage', 
+        text: 'SIEM coverage of critical assets',
+        options: ['100% + 90d retention', '90-99%', '70-89%', '50-69%', '<50%', 'No SIEM']
+      },
+      { 
+        key: 'mttr_critical', 
+        text: 'Mean Time To Respond (MTTR) - Critical alerts',
+        options: ['<1 hour', '<4 hours', '<24 hours', '>24 hours', 'Not tracked']
+      },
+      { 
+        key: 'threat_hunting', 
+        text: 'Proactive threat hunting program',
+        options: ['Weekly', 'Monthly', 'Quarterly', 'Ad-hoc', 'None']
+      },
+      { 
+        key: 'cti_integration', 
+        text: 'Threat Intelligence integration',
+        options: ['Commercial + Auto-blocking', 'Commercial + Manual', 'Open-source only', 'Feed only', 'No CTI']
+      }
+    ]
   }
 ];
 
@@ -123,7 +151,7 @@ const SECTIONS = [
 const calculateAnswerScore = (questionKey: string, answer: string): number => {
   const scoringMap: Record<string, Record<string, number>> = {
     // Binary / Yes-No
-    mfa: { Yes: 100, Partial: 50, No: 0 },
+    mfa: { Yes: 100, Partial: 70, No: 0 },
     offsite_backup: { Yes: 100, No: 0 },
     immutable_backups: { Yes: 100, No: 0, 'Dont know': 25 },
     conditional_access: { Yes: 100, No: 0, 'Dont know': 25 },
@@ -133,20 +161,20 @@ const calculateAnswerScore = (questionKey: string, answer: string): number => {
     pam: { Yes: 100, Planned: 25, No: 0 },
     
     // Backup frequency (Daily = meilleur)
-    backups: { Daily: 100, Weekly: 75, Monthly: 40, Never: 0 },
-    backup_tested: { Monthly: 100, Quarterly: 80, Yearly: 40, Never: 0 },
+    backups: { Daily: 100, Weekly: 85, Monthly: 60, Never: 0 },
+    backup_tested: { Monthly: 100, Quarterly: 85, Yearly: 50, Never: 0 },
     
     // EDR Coverage
-    edr_coverage: { '100%': 100, '80-99%': 80, '50-79%': 50, '<50%': 20 },
+    edr_coverage: { '100%': 100, '80-99%': 90, '50-79%': 60, '<50%': 30, 'No EDR': 0 },
     
     // Patching (plus c'est rapide mieux c'est)
-    patching: { '<7 days': 100, '<30 days': 80, '<90 days': 40, '>90 days': 10 },
+    patching: { '<7 days': 100, '<30 days': 85, '<90 days': 50, '>90 days': 20 },
     
     // Encryption
-    endpoint_encryption: { 'Full disk': 100, Partial: 50, None: 0 },
+    endpoint_encryption: { 'Full disk': 100, Partial: 70, None: 0 },
     
     // USB Controls
-    usb_controls: { Blocked: 100, Monitored: 60, 'No control': 0 },
+    usb_controls: { Blocked: 100, Monitored: 75, 'No control': 0 },
     
     // Firewall
     firewall: { Yes: 100, 'Traditional firewall only': 50, No: 0 },
@@ -161,18 +189,18 @@ const calculateAnswerScore = (questionKey: string, answer: string): number => {
     network_monitoring: { '24/7': 100, 'Business hours': 60, 'No monitoring': 0 },
     
     // IR Plan
-    ir_plan: { Yes: 100, Outdated: 40, No: 0 },
-    ir_tested: { '<6 months': 100, '<12 months': 80, '>12 months': 40, Never: 0 },
+    ir_plan: { Yes: 100, Outdated: 60, No: 0 },
+    ir_tested: { '<6 months': 100, '<12 months': 85, '>12 months': 50, Never: 0 },
     
     // Insurance
-    cyber_insurance: { Yes: 100, Expired: 20, No: 0 },
-    tabletop: { Quarterly: 100, Yearly: 80, Never: 0 },
+    cyber_insurance: { Yes: 100, Expired: 40, No: 0 },
+    tabletop: { Quarterly: 100, Yearly: 90, Never: 0 },
     
     // Compliance
     loi25: { Yes: 100, 'In progress': 60, No: 0 },
-    security_policies: { Yes: 100, Outdated: 40, No: 0 },
-    training: { Mandatory: 100, Optional: 60, None: 0 },
-    third_party_audits: { Annual: 100, Biannual: 60, Never: 0 }
+    security_policies: { Yes: 100, Outdated: 60, No: 0 },
+    training: { Mandatory: 100, Optional: 75, None: 0 },
+    third_party_audits: { Annual: 100, Biannual: 75, Never: 0 }
   };
 
   return scoringMap[questionKey]?.[answer] ?? 50; // Default 50 si inconnu
