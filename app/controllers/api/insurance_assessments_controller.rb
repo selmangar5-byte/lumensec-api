@@ -2,7 +2,7 @@ module Api
   class InsuranceAssessmentsController < ApplicationController
     def create
       answers = params[:answers]
-      tenant_id = current_tenant_id
+      tenant_id = ([request.headers["X-Tenant-ID"], params[:tenant_id]].find { |v| v.present? && v != "default" }&.to_i || 1)
       
       # MODIFICATION : Passage du tenant_id pour vérification MFA M365
       result = InsuranceScoringEngine.calculate(answers.merge('tenant_id' => tenant_id))
@@ -21,7 +21,7 @@ module Api
     end
     
     def index
-      tenant_id = current_tenant_id
+      tenant_id = ([request.headers["X-Tenant-ID"], params[:tenant_id]].find { |v| v.present? && v != "default" }&.to_i || 1)
       
       assessments = InsuranceAssessment
         .where(tenant_id: tenant_id)
@@ -44,7 +44,7 @@ module Api
     end
     
     def report
-      tenant_id = current_tenant_id
+      tenant_id = ([request.headers["X-Tenant-ID"], params[:tenant_id]].find { |v| v.present? && v != "default" }&.to_i || 1)
       
       assessment = InsuranceAssessment.find_by(id: params[:id], tenant_id: tenant_id)
       

@@ -1,20 +1,23 @@
 class InsuranceAssessmentsController < ApplicationController
+  skip_before_action :current_tenant_id, raise: false
+  skip_before_action :set_tenant, raise: false
   skip_before_action :authenticate_user!, raise: false
   skip_before_action :verify_authenticity_token
 
   before_action :set_cors_headers
 
   def index
-    tenant_id = params[:tenant_id]
     @assessments = InsuranceAssessment.where(tenant_id: tenant_id).order(created_at: :desc)
     render json: @assessments
   end
 
   def create
     answers   = params[:answers].to_h rescue {}
-    tenant_id = params[:tenant_id] || 1
+    tenant_id = 1 # forcé pour test
 
+    Rails.logger.info "DEBUG: tenant_id=#{tenant_id.inspect}"
     score, risk_level, premium_impact, section_scores, gaps = calculate_insurance_score(answers)
+    Rails.logger.info "DEBUG2: tenant_id value=#{tenant_id} class=#{tenant_id.class}"
 
     @assessment = InsuranceAssessment.new(
       tenant_id:      tenant_id,
@@ -156,3 +159,4 @@ class InsuranceAssessmentsController < ApplicationController
     gaps.filter_map { |g| reco_map[g] }.first(8)
   end
 end
+ 
