@@ -22,8 +22,8 @@ class M365SecurityScanner
       # Endpoint (NOUVEAU - partiel)
       endpoint_encryption: check_device_encryption,
       patching: check_update_policy,
-      edr_coverage: "Dont know",
-      usb_controls: "Dont know",
+      edr_coverage: check_edr_coverage,
+      usb_controls: check_usb_controls,
       
       # Network (NOUVEAU - limité)
       firewall: check_network_protection,
@@ -34,6 +34,7 @@ class M365SecurityScanner
       # Incident Response (NOUVEAU - limité)
       ir_plan: "No", # Non visible
       ir_tested: check_tabletop, # Non visible
+      tabletop: check_tabletop,
       cyber_insurance: "No", # Non visible
       
       # Compliance (NOUVEAU)
@@ -111,24 +112,15 @@ class M365SecurityScanner
 
 
   def check_backup_testing
-    # Methode 1: Verifier les restaurations effectuees
-    response = make_request("/auditLogs/directoryAudits?$filter=activityDisplayName eq 'Restore' or activityDisplayName eq 'Restore site'&$top=5")
-    if response.success?
-      data = JSON.parse(response.body)
-      audits = data.dig('value') || []
-      return "Quarterly" if audits.size >= 2
-      return "Yearly" if audits.any?
-    end
-    
-    # Methode 2: Verifier Exchange retention (signe de maturite backup)
-    ex_resp = make_request("/admin/exchange/retentionPolicies")
-    if ex_resp.success? && JSON.parse(ex_resp.body).dig('value')&.any?
-      return "Yearly"
-    end
-    
-    "Yearly"
+    response = make_request("/auditLogs/directoryAudits?$filter=activityDisplayName eq 'Restore'&$top=10")
+    return "Never" unless response.success?
+    data = JSON.parse(response.body)
+    audits = data.dig('value') || []
+    return "Quarterly" if audits.size >= 2
+    return "Yearly" if audits.size == 1
+    "Never"
   rescue
-    "Yearly"
+    "Never"
   end
   def check_device_encryption
     response = make_request("/deviceManagement/deviceCompliancePolicies")
@@ -230,5 +222,36 @@ class M365SecurityScanner
     "Yearly" # Au moins test annuel implicite
   rescue
     "Yearly"
+  end
+
+  def check_edr_coverage
+    response = make_request("/security/secureScores")
+    return "Dont know" unless response.success?
+    data = JSON.parse(response.body)
+    score = data.dig('value')&.first
+    return "Dont know" unless score
+    current = score['currentScore'].to_f
+    max = score['maxScore'].to_f
+    return "Dont know" if max == 0
+    percentage = (current / max * 100).round
+    case percentage
+    when 80..100 then "100%"
+    when 60..79 then "80-99%"
+    when 40..59 then "50-79%"
+    else "<50%"
+    end
+  rescue
+    "Dont know"
+  end
+
+  def check_usb_controls
+    response = make_request("/deviceManagement/deviceConfigurations")
+    return "Dont know" unless response.success?
+    data = JSON.parse(response.body)
+    configs = data.dig('value') || []
+    usb_policy = configs.any? { |c| c['displayName'].to_s.downcase.match?(/usb|removable|storage/) }
+    usb_policy ? "Blocked" : "No control"
+  rescue
+    "Dont know"
   end
 end
