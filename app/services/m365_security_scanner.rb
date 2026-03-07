@@ -217,7 +217,17 @@ end
   end
 
   def check_immutable_backup
-    "Partial (30+ days)"
+    # Vérifie si des retention policies ou litigation holds sont actifs (backups immutables)
+    response = make_request("/security/retentionPolicies")
+    return "No" unless response.success?
+    
+    data = JSON.parse(response.body)
+    policies = data.dig('value') || []
+    
+    # Si au moins une policy de rétention existe = backups protégés/immutables
+    policies.any? ? "Yes" : "No"
+  rescue
+    "No"
   end
   
   def check_tabletop
