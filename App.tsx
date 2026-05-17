@@ -22,7 +22,6 @@ export default function App() {
   }, [authenticated]);
 
   const handleSelectIncident = (id: string | number) => {
-    console.log('INCIDENT CLICKED:', id);
     setSelectedIncidentId(String(id));
   };
 
@@ -30,8 +29,6 @@ export default function App() {
     ? stats.recent_incidents.find(i => String(i.id) === selectedIncidentId)
     : null;
 
-  console.log('SELECTED ID:', selectedIncidentId);
-  console.log('SELECTED INCIDENT:', selectedIncident);
 
   if (!authenticated) {
     return <Login onLogin={() => setAuthenticated(true)} />;
@@ -75,7 +72,7 @@ export default function App() {
         <footer className="border-t border-slate-800 py-8 mt-20">
           <div className="container mx-auto px-8 text-center">
             <p className="text-[10px] text-slate-600 font-mono uppercase tracking-[0.3em]">
-              © 2025 Lumensec // Security Operating Center // Project Finalized by Nawal
+              © 2026 Lumensec // Security Operating Center // Project Finalized by Nawal
             </p>
           </div>
         </footer>
